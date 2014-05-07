@@ -1,6 +1,9 @@
 
-
-
+var people=[];
+var miles=new dude();
+miles.equip(legArmorList[2]);
+miles.equip(chestArmorList[2]);
+people.push(miles);
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -216,12 +219,8 @@ requestAnimationFrame(merp,canvas);
 		mainMenuUpdate();
 		mainMenuDraw();
 	}else if(mode==1){
-		worldMapUpdate();
-		worldMapDraw();
-	}else if(mode==2){
 		mainUpdate();
-		mainDraw();
-		
+		mainDraw();	
 	}
 	//canvas.beginPath();
 	//osCanvas.drawImage(canvasElement,0,0);
@@ -289,6 +288,10 @@ function mainMenuDraw(){
 
 	}
 	monsta.draw(canvas,camera);
+		for(var i=0;i<people.length;i++)
+	{
+		people[i].draw(canvas,camera);
+	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
 
@@ -306,6 +309,7 @@ function mainMenuUpdate(){
 	 }
 	if(startkey.check()){
 		mode=1;
+		gamestart=true;
 	}
 	if(downkey.check()){
 		mmcur=!mmcur;
@@ -341,6 +345,12 @@ function worldMapUpdate(){
 
 //------------MAIN DRAW-----------------------------------------
 function mainDraw() {
+	curMap.draw(camera);
+	for(var i=0;i<people.length;i++)
+	{
+		people[i].draw(canvas,camera);
+	}
+	monsta.draw(canvas,camera);
 	
 };
 //------------MAIN LOOP-----------------------------------------
@@ -371,5 +381,10 @@ function mainUpdate()
 		mapDirty=true;
     }
     if (tileani>3) {tileani=0} //tile animations
-	};
+	monsta.update();
+	for(var i=0;i<people.length;i++)
+	{
+		people[i].update();
+	}
+};
 merp();
