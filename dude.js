@@ -69,11 +69,13 @@ helmetList.push(noHelmet);
 
 function dude()
 {
+	this.alive=true;
 	this.x=1;
 	this.y=1;
 	this.tileX=1;
 	this.tileY=1;
 	this.hp=100;
+	this.speed=2;
 	this.width=32;
 	this.height=32;
 	this.expression=0;
@@ -105,7 +107,7 @@ function dude()
 dude.prototype.draw=function(can,cam)
 {
 	can.save();
-	//can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+	can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,0);

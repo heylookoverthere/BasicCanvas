@@ -5,6 +5,7 @@ var camera = {  //represents the camera, aka what part of the map is on screen
     height: 40,
     zoom: 1,
 	panning: false,
+	following: null,
 	panX: 0,
 	panY: 0,
 	panSpeed: 3,
@@ -71,7 +72,23 @@ var camera = {  //represents the camera, aka what part of the map is on screen
         this.x=tax;
         this.y=tay;
     },
-	update: function() {
+	follow: function(targ){
+		this.following=targ;
+	},
+	unFollow: function(){
+		this.following=null;
+	},
+	update: function(){
+
+		if (this.following)
+		{
+			if(!this.following.alive)
+			{
+				this.following=null;
+				return;
+			}
+			this.center(this.following);
+		}
 
 		if(this.panning){
 			mapDirty=true;
@@ -440,9 +457,10 @@ function Map(I) { //map object
     };
 
     I.draw = function(cam) {
+		//console.log("yar1");
 		if(!mapDirty) {return;}
-		if((isBattle) /*||(preBattle)*/||(battleReport)){return;}
-        cam.zoom=I.zoom;
+		//console.log("yar");
+		cam.zoom=I.zoom;
         cam.check();
 		var poopx=cam.x+cam.width*Math.pow(2, I.zoom-1);
 		var poopy=cam.y+cam.height*Math.pow(2, I.zoom-1);
@@ -478,14 +496,14 @@ function Map(I) { //map object
                     }
                 }
                 if(dominantType.type && dominantType.type <20) {
-					tileSprite[dominantType.type].draw(sillycanvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[dominantType.type].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
                 }else if(dominantType.type&& dominantType.type<24){
-					tileSprite[20+tileani].draw(sillycanvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[20+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
 				}else if (dominantType.type&& dominantType.type<28) {
-					tileSprite[24+tileani].draw(sillycanvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[24+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
 				}else 
 				{
-					tileSprite[TileType.Lava+tileani].draw(sillycanvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[TileType.Lava+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
 				}
             }
         }

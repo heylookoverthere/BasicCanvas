@@ -5,6 +5,8 @@ miles.equip(legArmorList[2]);
 miles.equip(chestArmorList[2]);
 people.push(miles);
 
+camera.follow(miles);
+
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
 document.body.addEventListener("mousewheel",mouseWheel,false);
@@ -37,8 +39,8 @@ var mapCanvas = mapCanvasElement.get(0).getContext("2d");
 
 canvasElement.css("position", "absolute").css("z-index", "1");
 canvasElement.appendTo('body');
-canvasElement.css("position", "absolute").css("z-index", "1").css("top", canvasElement.position().top).css("left", canvasElement.position().left);
-sillycanvasElement.css("position", "absolute").css("z-index", "0").css("top", canvasElement.position().top).css("left", canvasElement.position().left);
+canvasElement.css("position", "absolute").css("z-index", "0").css("top", canvasElement.position().top).css("left", canvasElement.position().left);
+sillycanvasElement.css("position", "absolute").css("z-index", "1").css("top", canvasElement.position().top).css("left", canvasElement.position().left);
 battleCanvasElement.css("position", "absolute").css("z-index", "2").css("top", canvasElement.position().top).css("left", canvasElement.position().left);
 sillycanvasElement.appendTo('body');
 battleCanvasElement.appendTo('body');
@@ -86,7 +88,7 @@ function akey(k) {  //represents a keyboard button
 
 
 curMap = new Map();
-
+curMap.clear();
 
 distance=function(one,two){
 	return(Math.pow(one.x-two.x,2)+Math.pow(one.y-two.y,2));
@@ -381,10 +383,35 @@ function mainUpdate()
 		mapDirty=true;
     }
     if (tileani>3) {tileani=0} //tile animations
+	camera.update();
 	monsta.update();
 	for(var i=0;i<people.length;i++)
 	{
 		people[i].update();
+	}
+	if(keydown.up)
+	{
+		miles.y-=miles.speed;
+		if(miles.y<0) {miles.y=0;}
+		mapDirty=true;
+	}
+	if(keydown.down)
+	{
+		miles.y+=miles.speed;
+		if(miles.y>600) {miles.y=600;}
+		mapDirty=true;
+	}
+	if(keydown.left)
+	{
+		miles.x-=miles.speed;
+		if(miles.x<0) {miles.x=0;}
+		mapDirty=true;
+	}
+	if(keydown.right)
+	{
+		miles.x+=miles.speed;
+		if(miles.x>600) {miles.x=600;}
+		mapDirty=true;
 	}
 };
 merp();
