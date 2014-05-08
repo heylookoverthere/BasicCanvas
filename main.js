@@ -12,6 +12,7 @@ document.body.addEventListener("click", mouseClick, false);
 document.body.addEventListener("mousewheel",mouseWheel,false);
 document.body.addEventListener("DOMMouseScroll", mouseWheel, false);
 
+
 //-----------------------------------------------
 
 
@@ -45,6 +46,21 @@ battleCanvasElement.css("position", "absolute").css("z-index", "2").css("top", c
 sillycanvasElement.appendTo('body');
 battleCanvasElement.appendTo('body');
 canvasElement.get(0).addEventListener("mousemove", mouseXY, false);
+
+var gamepadSupportAvailable = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads;
+
+var gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+
+window.addEventListener("MozGamepadConnected", function(e) {
+  console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+  e.gamepad.index, e.gamepad.id,
+  e.gamepad.buttons.length, e.gamepad.axes.length);
+});
+
+window.addEventListener("MozGamepadDisconnected", function(e) {
+  console.log("Gamepad disconnected from index %d: %s",
+  e.gamepad.index, e.gamepad.id);
+});
 
 
 function playSound(name){
@@ -305,6 +321,17 @@ function mainMenuUpdate(){
 		document.getElementById("titleAudio").pause();
 		//monsta.startOrbit(40000,Math.floor(Math.random()*CANVAS_WIDTH),Math.floor(Math.random()*CANVAS_HEIGHT),60);
 	 }
+	 
+	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+	if(gamepad)
+	{
+		if(gamepad.buttons[7])
+		{
+			mode=1;
+			gamestart=true;
+		}
+	}
+	
 	if(startkey.check()){
 		mode=1;
 		gamestart=true;
@@ -315,6 +342,7 @@ function mainMenuUpdate(){
 	if(upkey.check()){
 		mmcur=!mmcur;
 	}
+	
 };
 
 function reqsMet(dex){
@@ -361,6 +389,33 @@ function mainUpdate()
     timestamp = new Date();
     milliseconds = timestamp.getTime();
     tick++;
+	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+	
+	//console.log(gamepad.axes[0]);
+	
+	/*console.log(gamepad.buttons[0],gamepad.buttons[1],gamepad.buttons[2],gamepad.buttons[3],gamepad.buttons[4],gamepad.buttons[5],gamepad.buttons[6],gamepad.buttons[7],gamepad.buttons[8],gamepad.buttons[14],gamepad.buttons[15]);*/
+	
+
+	/*if(gamepad.buttons[0]===1)
+	{
+		console.log("zero");
+	}
+	if(gamepad.buttons[1]==1)
+	{
+		console.log("one");
+	}
+	if(gamepad.buttons[2]==1)
+	{
+		console.log("two");
+	}*/
+	if(gamepad)
+	{
+		if(gamepad.buttons[0])
+		{
+			miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+			miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+		}
+	}
 	if(debugkey.check())
 	{
 		miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
@@ -390,29 +445,59 @@ function mainUpdate()
 	{
 		people[i].update();
 	}
-	if(keydown.up)
+	
+	if(gamepad)
 	{
-		miles.y-=miles.speed;
-		if(miles.y<0) {miles.y=0;}
-		mapDirty=true;
-	}
-	if(keydown.down)
+		if(gamepad.axes[1]===-1)
+		{
+			miles.y-=miles.speed;
+			if(miles.y<0) {miles.y=0;}
+			mapDirty=true;
+		}
+		if(gamepad.axes[1]===1)
+		{
+			miles.y+=miles.speed;
+			if(miles.y>600) {miles.y=600;}
+			mapDirty=true;
+		}
+		if(gamepad.axes[0]===-1)
+		{
+			miles.x-=miles.speed;
+			if(miles.x<0) {miles.x=0;}
+			mapDirty=true;
+		}
+		if(gamepad.axes[0]===1)
+		{
+			miles.x+=miles.speed;
+			if(miles.x>600) {miles.x=600;}
+			mapDirty=true;
+		}
+	}else
 	{
-		miles.y+=miles.speed;
-		if(miles.y>600) {miles.y=600;}
-		mapDirty=true;
-	}
-	if(keydown.left)
-	{
-		miles.x-=miles.speed;
-		if(miles.x<0) {miles.x=0;}
-		mapDirty=true;
-	}
-	if(keydown.right)
-	{
-		miles.x+=miles.speed;
-		if(miles.x>600) {miles.x=600;}
-		mapDirty=true;
+		if(keydown.up)
+		{
+			miles.y-=miles.speed;
+			if(miles.y<0) {miles.y=0;}
+			mapDirty=true;
+		}
+		if(keydown.down)
+		{
+			miles.y+=miles.speed;
+			if(miles.y>600) {miles.y=600;}
+			mapDirty=true;
+		}
+		if(keydown.left)
+		{
+			miles.x-=miles.speed;
+			if(miles.x<0) {miles.x=0;}
+			mapDirty=true;
+		}
+		if(keydown.right)
+		{
+			miles.x+=miles.speed;
+			if(miles.x>600) {miles.x=600;}
+			mapDirty=true;
+		}
 	}
 };
 merp();

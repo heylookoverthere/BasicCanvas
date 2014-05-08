@@ -81,13 +81,13 @@ function dude()
 	this.race=1;
 	if(Math.random()*10>5)
 	{
-		this.race=1;
+		this.race=0;
 	}
 	
-	this.x=1;
-	this.y=1;
+	this.x=220;//this seems to matter, tilex doesnt
+	this.y=170;
 	this.tileX=1;
-	this.tileY=1;
+	this.tileY=1
 	this.headHeight=-8;
 	this.headBobRoom=6;
 	this.hp=100;
