@@ -102,9 +102,65 @@ function akey(k) {  //represents a keyboard button
     return this;
 }
 
+function aPadButton(k,pad) {  //represents a keyboard button
+    k = k || 0;
+    this.key =k;
+    this.aflag=false;
+    this.dflag=false;
+	this.parentPad=pad;
+	this.desc="A small brown mushroom.";
+    this.check= function(){
+        if (this.parentPad.buttons[this.key]) { 
+            this.aflag=true;
+            return false;
+        }
+        if((!this.parentPad.buttons[this.key]) && (this.aflag===true)){
+            this.aflag=false;
+            return true;
+        }
+    };
+    this.checkDown= function(){
+        /*if ((parentPad.buttons[this.key] )  && (!this.dflag)) { 
+            this.dflag=true;
+            return true;
+        }
+        if(!parentPad.buttons[this.key]){
+            this.dflag=false;
+            return false;
+        }*/
+		if (this.parentPad.buttons[this.key] )
+		{
+			return true;
+		}
+		return false;
+    };
+    return this;
+}
+
+function virtualGamePad()
+{
+	this.buttons=[];
+	this.dpad=[];
+	this.pad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+	this.dpad.push(this.pad.axes[0])
+	this.dpad.push(this.pad.axes[1]);
+	for(var i=0;i<this.pad.buttons.length;i++)
+	{
+		var daisy=new aPadButton(i,this.pad);
+		this.buttons.push(daisy);
+	}
+	
+}
+
+virtualGamePad.prototype.update=function()
+{
+	this.pad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+};
 
 curMap = new Map();
 curMap.clear();
+
+controller= new virtualGamePad(gamepad);
 
 distance=function(one,two){
 	return(Math.pow(one.x-two.x,2)+Math.pow(one.y-two.y,2));
@@ -321,11 +377,13 @@ function mainMenuUpdate(){
 		document.getElementById("titleAudio").pause();
 		//monsta.startOrbit(40000,Math.floor(Math.random()*CANVAS_WIDTH),Math.floor(Math.random()*CANVAS_HEIGHT),60);
 	 }
-	 
-	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
-	if(gamepad)
+	
+	controller.update();
+	
+	//gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+	if(controller.pad)
 	{
-		if(gamepad.buttons[7])
+		if(controller.buttons[7].check())
 		{
 			mode=1;
 			gamestart=true;
@@ -408,9 +466,9 @@ function mainUpdate()
 	{
 		console.log("two");
 	}*/
-	if(gamepad)
+	if(controller.pad)
 	{
-		if(gamepad.buttons[0])
+		if(controller.buttons[0].check())
 		{
 			miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 			miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
@@ -446,27 +504,27 @@ function mainUpdate()
 		people[i].update();
 	}
 	
-	if(gamepad)
+	if(controller.pad)
 	{
-		if(gamepad.axes[1]===-1)
+		if(controller.pad.axes[1]===-1)
 		{
 			miles.y-=miles.speed;
 			if(miles.y<0) {miles.y=0;}
 			mapDirty=true;
 		}
-		if(gamepad.axes[1]===1)
+		if(controller.pad.axes[1]===1)
 		{
 			miles.y+=miles.speed;
 			if(miles.y>600) {miles.y=600;}
 			mapDirty=true;
 		}
-		if(gamepad.axes[0]===-1)
+		if(controller.pad.axes[0]===-1)
 		{
 			miles.x-=miles.speed;
 			if(miles.x<0) {miles.x=0;}
 			mapDirty=true;
 		}
-		if(gamepad.axes[0]===1)
+		if(controller.pad.axes[0]===1)
 		{
 			miles.x+=miles.speed;
 			if(miles.x>600) {miles.x=600;}
