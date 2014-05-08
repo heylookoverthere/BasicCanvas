@@ -154,6 +154,5 @@ dude.prototype.equip=function(thing)
 	//remove and add to inventory
   }
   this.equipment[thing.slot]=thing;
-  console.log(thing, thing.slot);
   //confer bonuses
 };

@@ -361,6 +361,11 @@ function mainUpdate()
     timestamp = new Date();
     milliseconds = timestamp.getTime();
     tick++;
+	if(debugkey.check())
+	{
+		miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+		miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+	}
 	
 	if(helpkey.check())
 	{
