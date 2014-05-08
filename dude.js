@@ -12,6 +12,8 @@ BonusTypes.SpeedUp=3;
 BonusTypes.Regen=4;
 BonusTypes.MagicUp=5;
 
+var platformer=false
+
 function armor(sprtext,sloot)
 {
 	this.defense=0;
@@ -89,6 +91,16 @@ function dude()
 	
 	this.x=220;//this seems to matter, tilex doesnt
 	this.y=170;
+	this.xV=0;
+	this.yV=0;
+	this.numJumps=2;
+	this.falling=false;
+	this.fallingJump=[];
+	for(var i=0;i<this.numJumps;i++)
+	{
+		this.fallingJump.push(false);
+	}
+	this.jumpTrack=0;
 	this.tileX=1;
 	this.tileY=1
 	this.headHeight=-8;
@@ -223,7 +235,25 @@ dude.prototype.bodyBobIterate=function()
 		this.breathing=false;
 	}
 };
-
+dude.prototype.jump=function()
+{
+	//if(this.falling) {return;}
+	if(this.jumpTrack<this.numJumps)
+	{
+		this.yV=-4;
+		this.falling=true;
+		this.jumpTrack++;
+	}
+};
+dude.prototype.bigJump=function()
+{
+	if(this.jumpTrack<this.numJumps)
+	{
+		this.yV=-6;
+		this.falling=true;
+		this.jumpTrack++;
+	}
+};
 dude.prototype.update=function()
 {
 
@@ -261,6 +291,31 @@ dude.prototype.update=function()
 			this.bodyBobTrack=0;
 			this.bodyBobIterate();
 		}
+	}
+	
+
+	
+	if(platformer)
+	{
+		this.yV+=.2;
+	
+		this.x+=this.xV;
+		this.y+=this.yV;
+		if(this.y>314)
+		{
+			this.y=314;
+			this.falling=false;
+			this.jumpTrack=0;
+		}
+		//friction
+		if(this.xV>0)
+		{
+			this.xV-=.2
+		}else if(this.xV<0)
+		{
+			this.xV+=.2;
+		}
+		mapDirty=true;
 	}
 };	
 

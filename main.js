@@ -5,7 +5,8 @@ miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 people.push(miles);
 
-camera.follow(miles);
+camera.center(miles);
+//camera.follow(miles);
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -285,7 +286,13 @@ numberkeys.push(new akey("7"));
 numberkeys.push(new akey("8"));
 numberkeys.push(new akey("9"));
 
-
+function drawGUI(can)
+{
+	can.fillStyle="white";
+	can.fillText("Coords: "+miles.x+","+miles.y,25,25);
+	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
+	can.fillText("Falling: "+miles.falling,755,55);
+}
 
 function merp() {
 requestAnimationFrame(merp,canvas);
@@ -365,6 +372,8 @@ function mainMenuDraw(){
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
 
+
+
 function mainMenuUpdate(){
 	var tick=0;
 	lasttime=milliseconds;
@@ -435,6 +444,7 @@ function mainDraw() {
 		people[i].draw(canvas,camera);
 	}
 	monsta.draw(canvas,camera);
+	drawGUI(canvas);
 	
 };
 //------------MAIN LOOP-----------------------------------------
@@ -468,20 +478,32 @@ function mainUpdate()
 	}*/
 	if(controller.pad)
 	{
-		if(controller.buttons[0].check())
+		if(controller.buttons[1].check())
+		{
+			if(miles.crouching)
+			{
+				miles.bigJump();
+			}else
+			{
+				miles.jump();
+			}
+		}
+		if(controller.buttons[2].check())
 		{
 			miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 			miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 			miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
 		}
 		
-		if(controller.buttons[1].checkDown())
+		if(!platformer)
 		{
-			miles.crouching=true;
-			console.log("couch");
-		}else
-		{
-			miles.crouching=false;
+			if(controller.buttons[0].checkDown())
+			{
+				miles.crouching=true;
+			}else
+			{
+				miles.crouching=false;
+			}
 		}
 		if(controller.buttons[5].check())
 		{
@@ -494,9 +516,11 @@ function mainUpdate()
 	}
 	if(debugkey.check())
 	{
-		miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
-		miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
-		miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
+		platformer=!platformer;
+	}
+	if(controller.buttons[6].check())
+	{
+		platformer=!platformer;
 	}
 	
 	if(helpkey.check())
@@ -523,31 +547,109 @@ function mainUpdate()
 		people[i].update();
 	}
 	
+	var speeMulti=1;
+	
+	if(controller.buttons[3].checkDown())
+	{
+		speedMulti=3;
+	}else
+	{
+		speedMulti=1;
+	}
+	
+	
 	if(controller.pad)
 	{
-		if(controller.pad.axes[1]===-1)
+		if(!platformer)
 		{
-			miles.y-=miles.speed;
-			if(miles.y<0) {miles.y=0;}
-			mapDirty=true;
-		}
-		if(controller.pad.axes[1]===1)
+			if(controller.pad.axes[1]===-1)
+			{
+				miles.y-=miles.speed*speedMulti;
+				if(miles.y<0) {miles.y=0;}
+				mapDirty=true;
+			}
+			if(controller.pad.axes[1]===1)
+			{
+				miles.y+=miles.speed*speedMulti;
+				if(miles.y>600) {miles.y=600;}
+				mapDirty=true;
+			}
+			if(controller.pad.axes[0]===-1)
+			{
+				miles.x-=miles.speed*speedMulti;
+				if(miles.x<0) {miles.x=0;}
+				mapDirty=true;
+			}
+			if(controller.pad.axes[0]===1)
+			{
+				miles.x+=miles.speed*speedMulti;
+				if(miles.x>600) {miles.x=600;}
+				mapDirty=true;
+			}
+		}else
 		{
-			miles.y+=miles.speed;
-			if(miles.y>600) {miles.y=600;}
-			mapDirty=true;
-		}
-		if(controller.pad.axes[0]===-1)
-		{
-			miles.x-=miles.speed;
-			if(miles.x<0) {miles.x=0;}
-			mapDirty=true;
-		}
-		if(controller.pad.axes[0]===1)
-		{
-			miles.x+=miles.speed;
-			if(miles.x>600) {miles.x=600;}
-			mapDirty=true;
+			if(controller.pad.axes[1]===-1)
+			{
+				miles.y-=miles.speed*speedMulti;
+				if(miles.y<0) {miles.y=0;}
+				mapDirty=true;
+			}
+			if(controller.pad.axes[1]===1)
+			{
+				miles.crouching=true;
+				mapDirty=true;
+			}else
+			{
+				miles.crouching=false;
+			}
+			if(controller.pad.axes[0]===-1)
+			{
+				miles.x-=miles.speed*speedMulti;
+				if(miles.x<0) {miles.x=0;}
+				mapDirty=true;
+			}
+			if(controller.pad.axes[0]===1)
+			{
+				miles.x+=miles.speed*speedMulti;
+				if(miles.x>600) {miles.x=600;}
+				mapDirty=true;
+			}
+			/*if(controller.pad.axes[1]===-1)
+			{
+				miles.yV-=0.2;
+				mapDirty=true;
+				if(miles.yV<-2)
+				{
+					miles.yV=-2;
+				}
+			}
+			if(controller.pad.axes[1]===1)
+			{
+				miles.yV+=0.2;
+				mapDirty=true;
+				if(miles.yV>2)
+				{
+					miles.yV=2;
+				}
+			}
+			if(controller.pad.axes[0]===-1)
+			{
+				miles.xV-=0.2;
+				mapDirty=true;
+				if(miles.xV<-2)
+				{
+					miles.xV=-2;
+				}
+			}
+			if(controller.pad.axes[0]===1)
+			{
+				miles.xV+=0.2;
+				mapDirty=true;
+				if(miles.xV>2)
+				{
+					miles.xV=2;
+				}
+			}*/
 		}
 	}else
 	{
