@@ -78,7 +78,7 @@ helmetList.push(noHelmet);
 function dude()
 {	
 	this.alive=true;
-	this.race=0;
+	this.race=1;
 	if(Math.random()*10>5)
 	{
 		this.race=1;
@@ -88,6 +88,8 @@ function dude()
 	this.y=1;
 	this.tileX=1;
 	this.tileY=1;
+	this.headHeight=-8;
+	this.headBobRoom=6;
 	this.hp=100;
 	this.speed=2;
 	this.width=32;
@@ -96,6 +98,9 @@ function dude()
 	this.crouching=false;
 	this.maxHp=100;
 	this.facing=0;
+	this.headBobRate=5;
+	this.headBobTrack=0;
+	this.bobbingUp=true;
 	this.headSprites=[];
 	this.headSprites.push(Sprite("head"+this.race));
 	this.chestSprites=[];
@@ -103,7 +108,7 @@ function dude()
 	this.legSprites=[];
 	this.legSprites.push(Sprite("legs"+this.race));
 	this.hairSprites=[];
-	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*3)));
+	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*4)));
 	this.faceSprites=[];
 	
 	this.faceSprites[0]=[];
@@ -127,22 +132,61 @@ dude.prototype.draw=function(can,cam)
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,0);
-	this.headSprites[this.facing].draw(can, 0,0);
-	this.faceSprites[this.facing][this.expression].draw(can,0,0);
-	this.hairSprites[this.facing].draw(can, 0,0);
-	for(var i=0;i<4;i++)
+
+	for(var i=0;i<2;i++)
 	{
 		if(this.equipment[i].visible)
 		{
 			this.equipment[i].sprite.draw(can,0,0);
 		}
 	}
+	this.headSprites[this.facing].draw(can, 0,this.headHeight);
+	this.faceSprites[this.facing][this.expression].draw(can,0,this.headHeight);
+	this.hairSprites[this.facing].draw(can, 0,this.headHeight);
+	for(var i=2;i<4;i++)
+	{
+		if(this.equipment[i].visible)
+		{
+			if(i===EquipSlots.Helmet)
+			{
+				this.equipment[i].sprite.draw(can,0,this.headHeight);
+			}else
+			{
+				this.equipment[i].sprite.draw(can,0,0);
+			}
+		}
+	}
 	can.restore();
+};
+
+dude.prototype.headBobIterate=function()
+{
+	if(this.bobbingUp)
+	{
+		this.headHeight++;
+		if(this.headHeight>-this.headBobRoom)
+		{
+			this.bobbingUp=false;
+		}
+	}else
+	{
+		this.headHeight--;
+		if(this.headHeight<-this.headBobRoom)
+		{
+			this.bobbingUp=true;
+		}
+	}
 };
 
 dude.prototype.update=function()
 {
-	
+	this.headBobTrack++;
+
+	if(this.headBobTrack>this.headBobRate)
+	{
+		this.headBobTrack=0;
+		this.headBobIterate();
+	}
 };	
 
 dude.prototype.equip=function(thing)
