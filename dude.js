@@ -60,16 +60,26 @@ legArmorList.push(noLegs);
 
 chestArmorList.push(new armor("shirt0",EquipSlots.Chest))
 chestArmorList.push(new armor("shirt1",EquipSlots.Chest));
+chestArmorList.push(new armor("shirt2",EquipSlots.Chest));
+chestArmorList.push(new armor("shirt3",EquipSlots.Chest));
 
 legArmorList.push(new armor("pants0",EquipSlots.Legs));
 legArmorList.push(new armor("pants1",EquipSlots.Legs));
+legArmorList.push(new armor("pants2",EquipSlots.Legs));
+legArmorList.push(new armor("pants3",EquipSlots.Legs));
 
 helmetList.push(noHelmet);
 //helmetList.push(new armor("
 
 function dude()
-{
+{	
 	this.alive=true;
+	this.race=0;
+	if(Math.random()*10>5)
+	{
+		this.race=1;
+	}
+	
 	this.x=1;
 	this.y=1;
 	this.tileX=1;
@@ -78,16 +88,16 @@ function dude()
 	this.speed=2;
 	this.width=32;
 	this.height=32;
-	this.expression=0;
+	this.expression=Math.floor(Math.random()*4);
 	this.crouching=false;
 	this.maxHp=100;
 	this.facing=0;
 	this.headSprites=[];
-	this.headSprites.push(Sprite("head0"));
+	this.headSprites.push(Sprite("head"+this.race));
 	this.chestSprites=[];
-	this.chestSprites.push(Sprite("chest0"));
+	this.chestSprites.push(Sprite("chest"+this.race));
 	this.legSprites=[];
-	this.legSprites.push(Sprite("legs0"));
+	this.legSprites.push(Sprite("legs"+this.race));
 	this.hairSprites=[];
 	this.hairSprites.push(Sprite("hair0"));
 	this.faceSprites=[];
@@ -95,6 +105,8 @@ function dude()
 	this.faceSprites[0]=[];
 	this.faceSprites[0].push(Sprite("face0"));
 	this.faceSprites[0].push(Sprite("face1"));
+	this.faceSprites[0].push(Sprite("face2"));
+	this.faceSprites[0].push(Sprite("face3"));
 	this.faceSprites[1]=[];
 	this.faceSprites[2]=[];
 	this.faceSprites[3]=[];

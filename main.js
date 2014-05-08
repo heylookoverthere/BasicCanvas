@@ -1,8 +1,8 @@
 
 var people=[];
 var miles=new dude();
-miles.equip(legArmorList[2]);
-miles.equip(chestArmorList[2]);
+miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 people.push(miles);
 
 camera.follow(miles);
@@ -290,10 +290,6 @@ function mainMenuDraw(){
 
 	}
 	monsta.draw(canvas,camera);
-		for(var i=0;i<people.length;i++)
-	{
-		people[i].draw(canvas,camera);
-	}
 	//canvas.fillText("Particles: "+ monsta.particles.length,460,550);
 };
 
