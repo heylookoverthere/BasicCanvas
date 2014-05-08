@@ -57,22 +57,25 @@ var helmetList=[];
 chestArmorList.push(noChest);
 
 legArmorList.push(noLegs);
-
-chestArmorList.push(new armor("shirt0",EquipSlots.Chest))
-chestArmorList.push(new armor("shirt1",EquipSlots.Chest));
-chestArmorList.push(new armor("shirt2",EquipSlots.Chest));
-chestArmorList.push(new armor("shirt3",EquipSlots.Chest));
-chestArmorList.push(new armor("shirt4",EquipSlots.Chest));
-chestArmorList.push(new armor("shirt5",EquipSlots.Chest));
-
-legArmorList.push(new armor("pants0",EquipSlots.Legs));
-legArmorList.push(new armor("pants1",EquipSlots.Legs));
-legArmorList.push(new armor("pants2",EquipSlots.Legs));
-legArmorList.push(new armor("pants3",EquipSlots.Legs));
-legArmorList.push(new armor("pants5",EquipSlots.Legs));
-legArmorList.push(new armor("pants4",EquipSlots.Legs));
-
 helmetList.push(noHelmet);
+var numshirts=8;
+var numpants=5;
+var numhelmets=6;
+for(var i=0;i<numshirts;i++)
+{
+	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest));
+}
+
+
+for(var i=0;i<numpants;i++)
+{
+	legArmorList.push(new armor("pants"+i,EquipSlots.Legs));
+}
+
+for(var i=0;i<numhelmets;i++)
+{
+	helmetList.push(new armor("helmet"+i,EquipSlots.Helmet));
+}
 //helmetList.push(new armor("
 
 function dude()
@@ -89,7 +92,11 @@ function dude()
 	this.tileX=1;
 	this.tileY=1
 	this.headHeight=-8;
-	this.headBobRoom=6;
+	this.headBobTop=-8;
+	this.headBobBottom=-6;
+	this.bodyHeight=2;
+	this.bodyBobRoom=-2;
+	this.headBob=false;
 	this.hp=100;
 	this.speed=2;
 	this.width=32;
@@ -98,9 +105,17 @@ function dude()
 	this.crouching=false;
 	this.maxHp=100;
 	this.facing=0;
-	this.headBobRate=5;
+	this.headBobRate=3;
 	this.headBobTrack=0;
+	this.bodyBobRate=15;
+	this.bodyBobTrack=0;
+	this.breathRate=20;
+	this.breathTrack=0;
+	this.bobs=0;
+	this.breathing=false;
+	this.crouching=false;
 	this.bobbingUp=true;
+	this.bodyBobbingUp=true;
 	this.headSprites=[];
 	this.headSprites.push(Sprite("head"+this.race));
 	this.chestSprites=[];
@@ -108,7 +123,7 @@ function dude()
 	this.legSprites=[];
 	this.legSprites.push(Sprite("legs"+this.race));
 	this.hairSprites=[];
-	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*4)));
+	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*5)));
 	this.faceSprites=[];
 	
 	this.faceSprites[0]=[];
@@ -131,31 +146,36 @@ dude.prototype.draw=function(can,cam)
 	can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
-	this.chestSprites[this.facing].draw(can, 0,0);
+	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
 
-	for(var i=0;i<2;i++)
+	if(this.equipment[EquipSlots.Legs].visible)
 	{
-		if(this.equipment[i].visible)
-		{
-			this.equipment[i].sprite.draw(can,0,0);
-		}
+			this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 	}
-	this.headSprites[this.facing].draw(can, 0,this.headHeight);
-	this.faceSprites[this.facing][this.expression].draw(can,0,this.headHeight);
-	this.hairSprites[this.facing].draw(can, 0,this.headHeight);
-	for(var i=2;i<4;i++)
+	if(this.equipment[EquipSlots.Chest].visible)
 	{
-		if(this.equipment[i].visible)
-		{
-			if(i===EquipSlots.Helmet)
+			this.equipment[EquipSlots.Chest].sprite.draw(can,0,this.bodyHeight+this.crouchAdj);
+			if(false)//this.crouching)
 			{
-				this.equipment[i].sprite.draw(can,0,this.headHeight);
-			}else
-			{
-				this.equipment[i].sprite.draw(can,0,0);
+				this.legSprites[this.facing].draw(can, 0,0);
+				this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 			}
-		}
 	}
+	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+
+	if(this.equipment[EquipSlots.Helmet].visible)
+	{
+		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	}else
+	{
+		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	}
+	if(this.equipment[EquipSlots.Ring].visible)
+	{
+		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
+	}
+	
 	can.restore();
 };
 
@@ -164,28 +184,83 @@ dude.prototype.headBobIterate=function()
 	if(this.bobbingUp)
 	{
 		this.headHeight++;
-		if(this.headHeight>-this.headBobRoom)
+		if(this.headHeight>this.headBobBottom)
 		{
 			this.bobbingUp=false;
 		}
 	}else
 	{
 		this.headHeight--;
-		if(this.headHeight<-this.headBobRoom)
+		if(this.headHeight<this.headBobTop)
 		{
 			this.bobbingUp=true;
 		}
 	}
 };
 
+dude.prototype.bodyBobIterate=function()
+{
+	if(this.bodyBobbingUp)
+	{
+		this.bodyHeight++;
+		if(this.bodyHeight>-this.bodyBobRoom)
+		{
+			this.bodyBobbingUp=false;
+			this.bobs++;
+		}
+	}else
+	{
+		this.bodyHeight--;
+		if(this.bodyHeight<-this.bodyBobRoom)
+		{
+			this.bodyBobbingUp=true;
+			this.bobs++;
+		}
+	}
+	if(this.bobs>1) 
+	{
+		this.bobs=0;
+		this.breathing=false;
+	}
+};
+
 dude.prototype.update=function()
 {
-	this.headBobTrack++;
 
-	if(this.headBobTrack>this.headBobRate)
+	if(this.crouching)
 	{
-		this.headBobTrack=0;
-		this.headBobIterate();
+		this.crouchAdj=5;
+		this.crouchAdjHead=3;
+	}else
+	{
+		this.crouchAdj=0;
+		this.crouchAdjHead=0;
+	}
+
+		this.breathTrack++;
+		if(this.breathTrack>this.breathRate)
+		{
+			this.breathing=true;
+			this.breathTrack=0;
+		}
+	if(this.headBob)
+	{
+		this.headBobTrack++;
+		
+		if(this.headBobTrack>this.headBobRate)
+		{
+			this.headBobTrack=0;
+			this.headBobIterate();
+		}
+	}
+	if(this.breathing)
+	{
+		this.bodyBobTrack++;
+		if(this.bodyBobTrack>this.bodyBobRate)
+		{
+			this.bodyBobTrack=0;
+			this.bodyBobIterate();
+		}
 	}
 };	
 

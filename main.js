@@ -472,12 +472,31 @@ function mainUpdate()
 		{
 			miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 			miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+			miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
+		}
+		
+		if(controller.buttons[1].checkDown())
+		{
+			miles.crouching=true;
+			console.log("couch");
+		}else
+		{
+			miles.crouching=false;
+		}
+		if(controller.buttons[5].check())
+		{
+			miles.expression=Math.floor(Math.random()*4);
+		}
+		if(controller.buttons[4].check())
+		{
+			miles.hairSprites[0]=Sprite("hair"+Math.floor(Math.random()*5));
 		}
 	}
 	if(debugkey.check())
 	{
 		miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 		miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+		miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
 	}
 	
 	if(helpkey.check())
