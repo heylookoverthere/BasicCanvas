@@ -60,9 +60,11 @@ chestArmorList.push(noChest);
 
 legArmorList.push(noLegs);
 helmetList.push(noHelmet);
-var numshirts=8;
-var numpants=5;
-var numhelmets=6;
+var numshirts=9;
+var numpants=7;
+var numhelmets=8;
+var numfaces=4;
+var numhair=6;
 for(var i=0;i<numshirts;i++)
 {
 	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest));
@@ -93,13 +95,8 @@ function dude()
 	this.y=170;
 	this.xV=0;
 	this.yV=0;
-	this.numJumps=2;
+	this.numJumps=8;
 	this.falling=false;
-	this.fallingJump=[];
-	for(var i=0;i<this.numJumps;i++)
-	{
-		this.fallingJump.push(false);
-	}
 	this.jumpTrack=0;
 	this.tileX=1;
 	this.tileY=1
@@ -113,7 +110,7 @@ function dude()
 	this.speed=2;
 	this.width=32;
 	this.height=32;
-	this.expression=Math.floor(Math.random()*4);
+	this.expression=Math.floor(Math.random()*numfaces);
 	this.crouching=false;
 	this.maxHp=100;
 	this.facing=0;
@@ -135,7 +132,7 @@ function dude()
 	this.legSprites=[];
 	this.legSprites.push(Sprite("legs"+this.race));
 	this.hairSprites=[];
-	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*5)));
+	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*numhair)));
 	this.faceSprites=[];
 	
 	this.faceSprites[0]=[];

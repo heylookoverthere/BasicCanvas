@@ -291,7 +291,7 @@ function drawGUI(can)
 	can.fillStyle="white";
 	can.fillText("Coords: "+miles.x+","+miles.y,25,25);
 	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
-	can.fillText("Falling: "+miles.falling,755,55);
+	can.fillText("Jumps: "+Math.floor(miles.numJumps-miles.jumpTrack),755,55);
 }
 
 function merp() {
@@ -507,11 +507,11 @@ function mainUpdate()
 		}
 		if(controller.buttons[5].check())
 		{
-			miles.expression=Math.floor(Math.random()*4);
+			miles.expression=Math.floor(Math.random()*numfaces);
 		}
 		if(controller.buttons[4].check())
 		{
-			miles.hairSprites[0]=Sprite("hair"+Math.floor(Math.random()*5));
+			miles.hairSprites[0]=Sprite("hair"+Math.floor(Math.random()*numhair));
 		}
 	}
 	if(debugkey.check())
