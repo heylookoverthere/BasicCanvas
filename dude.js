@@ -12,7 +12,8 @@ BonusTypes.SpeedUp=3;
 BonusTypes.Regen=4;
 BonusTypes.MagicUp=5;
 
-var platformer=false
+var platformer=false;
+var friction=0.07;
 
 function armor(sprtext,sloot)
 {
@@ -64,7 +65,7 @@ var numshirts=9;
 var numpants=7;
 var numhelmets=8;
 var numfaces=4;
-var numhair=6;
+var numhair=8;
 for(var i=0;i<numshirts;i++)
 {
 	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest));
@@ -95,6 +96,8 @@ function dude()
 	this.y=170;
 	this.xV=0;
 	this.yV=0;
+	this.elasticity=.3;
+	this.maxSpeed=4;
 	this.numJumps=8;
 	this.falling=false;
 	this.jumpTrack=0;
@@ -121,6 +124,8 @@ function dude()
 	this.breathRate=20;
 	this.breathTrack=0;
 	this.bobs=0;
+	this.speedFactor=1;
+	this.friction=0.04;
 	this.breathing=false;
 	this.crouching=false;
 	this.bobbingUp=true;
@@ -237,7 +242,7 @@ dude.prototype.jump=function()
 	//if(this.falling) {return;}
 	if(this.jumpTrack<this.numJumps)
 	{
-		this.yV=-4;
+		this.yV=-6;
 		this.falling=true;
 		this.jumpTrack++;
 	}
@@ -246,7 +251,7 @@ dude.prototype.bigJump=function()
 {
 	if(this.jumpTrack<this.numJumps)
 	{
-		this.yV=-6;
+		this.yV=-8;
 		this.falling=true;
 		this.jumpTrack++;
 	}
@@ -287,6 +292,7 @@ dude.prototype.update=function()
 		{
 			this.bodyBobTrack=0;
 			this.bodyBobIterate();
+			mapDirty=true;
 		}
 	}
 	
@@ -294,7 +300,7 @@ dude.prototype.update=function()
 	
 	if(platformer)
 	{
-		this.yV+=.2;
+		this.yV+=.3;
 	
 		this.x+=this.xV;
 		this.y+=this.yV;
@@ -303,14 +309,17 @@ dude.prototype.update=function()
 			this.y=314;
 			this.falling=false;
 			this.jumpTrack=0;
+			this.yV=-this.yV*this.elasticity;
 		}
 		//friction
 		if(this.xV>0)
 		{
-			this.xV-=.2
+			this.xV-=friction;
+			this.xV-=this.friction;
 		}else if(this.xV<0)
 		{
-			this.xV+=.2;
+			this.xV+=friction;
+			this.xV+=this.friction;
 		}
 		mapDirty=true;
 	}

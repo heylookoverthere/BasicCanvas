@@ -512,6 +512,7 @@ function mainUpdate()
 		if(controller.buttons[4].check())
 		{
 			miles.hairSprites[0]=Sprite("hair"+Math.floor(Math.random()*numhair));
+			mapDirty=true;
 		}
 	}
 	if(debugkey.check())
@@ -552,8 +553,10 @@ function mainUpdate()
 	if(controller.buttons[3].checkDown())
 	{
 		speedMulti=3;
+		miles.speedFactor=2;
 	}else
 	{
+		miles.speedFactor=1;
 		speedMulti=1;
 	}
 	
@@ -588,7 +591,7 @@ function mainUpdate()
 			}
 		}else
 		{
-			if(controller.pad.axes[1]===-1)
+			/*if(controller.pad.axes[1]===-1)
 			{
 				miles.y-=miles.speed*speedMulti;
 				if(miles.y<0) {miles.y=0;}
@@ -613,43 +616,37 @@ function mainUpdate()
 				miles.x+=miles.speed*speedMulti;
 				if(miles.x>600) {miles.x=600;}
 				mapDirty=true;
-			}
-			/*if(controller.pad.axes[1]===-1)
+			}*/
+			if(controller.pad.axes[1]===-1)
 			{
-				miles.yV-=0.2;
-				mapDirty=true;
-				if(miles.yV<-2)
-				{
-					miles.yV=-2;
-				}
+				//what does up do?
 			}
 			if(controller.pad.axes[1]===1)
 			{
-				miles.yV+=0.2;
+				miles.crouching=true;
 				mapDirty=true;
-				if(miles.yV>2)
-				{
-					miles.yV=2;
-				}
+			}else
+			{
+				miles.crouching=false;
 			}
 			if(controller.pad.axes[0]===-1)
 			{
-				miles.xV-=0.2;
+				miles.xV-=0.2*miles.speedFactor;
 				mapDirty=true;
-				if(miles.xV<-2)
+				if(miles.xV<-miles.maxSpeed*miles.speedFactor)
 				{
-					miles.xV=-2;
+					miles.xV=-miles.maxSpeed*miles.speedFactor;
 				}
 			}
 			if(controller.pad.axes[0]===1)
 			{
-				miles.xV+=0.2;
+				miles.xV+=0.2*miles.speedFactor;
 				mapDirty=true;
-				if(miles.xV>2)
+				if(miles.xV>miles.maxSpeed*miles.speedFactor)
 				{
-					miles.xV=2;
+					miles.xV=miles.maxSpeed*miles.speedFactor;
 				}
-			}*/
+			}
 		}
 	}else
 	{
