@@ -52,6 +52,9 @@ noLegs=new armor();
 noChest=new armor();
 noHelmet=new armor();
 noRing=new armor();
+noChest.slot=1;
+noHelmet.slot=2;
+noRing.slot=3;
 
 var legArmorList=[];
 var chestArmorList=[];
@@ -83,6 +86,12 @@ for(var i=0;i<numhelmets;i++)
 }
 //helmetList.push(new armor("
 
+function point()
+{
+	x=0;
+	y=0;
+}
+
 function dude()
 {	
 	this.alive=true;
@@ -101,6 +110,11 @@ function dude()
 	this.numJumps=8;
 	this.falling=false;
 	this.jumpTrack=0;
+	this.tail=[];
+	this.tailRate=0;
+	this.tailLength=5;
+	this.showTail=false;
+	this.tailCount=0;
 	this.tileX=1;
 	this.tileY=1
 	this.headHeight=-8;
@@ -154,7 +168,7 @@ function dude()
 	this.equipment[EquipSlots.Helmet]=noHelmet;
 	this.equipment[EquipSlots.Ring]=noRing;
 }
-dude.prototype.draw=function(can,cam)
+dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {
 	can.save();
 	can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
@@ -192,6 +206,55 @@ dude.prototype.draw=function(can,cam)
 	
 	can.restore();
 };
+
+dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
+{
+	
+	for(var i=0;i<this.tail.length;i++)
+	{
+		can.save();
+		can.globalAlpha=0.1;
+		can.translate((this.tail[i].x+cam.x)*cam.zoom,(this.tail[i].y+cam.y)*cam.zoom);
+		can.scale(cam.zoom,cam.zoom);
+		this.legSprites[this.facing].draw(can, 0,0);
+		this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
+
+		if(this.equipment[EquipSlots.Legs].visible)
+		{
+				this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
+		}
+		if(this.equipment[EquipSlots.Chest].visible)
+		{
+				this.equipment[EquipSlots.Chest].sprite.draw(can,0,this.bodyHeight+this.crouchAdj);
+				if(false)//this.crouching)
+				{
+					this.legSprites[this.facing].draw(can, 0,0);
+					this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
+				}
+		}
+		this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+
+		if(this.equipment[EquipSlots.Helmet].visible)
+		{
+			this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		}else
+		{
+			this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		}
+		if(this.equipment[EquipSlots.Ring].visible)
+		{
+			this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
+		}
+		can.restore();
+	}
+
+};
+
+dude.prototype.realDraw=function(can,cam)
+{
+	
+}
 
 dude.prototype.headBobIterate=function()
 {
@@ -237,9 +300,19 @@ dude.prototype.bodyBobIterate=function()
 		this.breathing=false;
 	}
 };
+
+dude.prototype.pound=function()
+{
+	if(this.pounding) {return;}
+	this.yV=+16;
+	this.pounding=true;
+	this.showTail=true;
+	//animation
+};
+
 dude.prototype.jump=function()
 {
-	//if(this.falling) {return;}
+	if(this.pounding) {return;}
 	if(this.jumpTrack<this.numJumps)
 	{
 		this.yV=-6;
@@ -249,6 +322,7 @@ dude.prototype.jump=function()
 };
 dude.prototype.bigJump=function()
 {
+	if(this.pounding) {return;}
 	if(this.jumpTrack<this.numJumps)
 	{
 		this.yV=-8;
@@ -258,7 +332,21 @@ dude.prototype.bigJump=function()
 };
 dude.prototype.update=function()
 {
+	this.tailCount++;
+	if(true)//(this.tailCount>this.tailRate)
+	{
+		this.tailCount=0;
 
+		var teddard=new point();
+		teddard.x=this.x;
+		teddard.y=this.y;
+		this.tail.push(teddard);
+		if(this.tail.length>this.tailLength)
+		{
+			this.tail.splice(0,1);
+		}
+		
+	}
 	if(this.crouching)
 	{
 		this.crouchAdj=5;
@@ -308,8 +396,10 @@ dude.prototype.update=function()
 		{
 			this.y=314;
 			this.falling=false;
+			this.pounding=false;
 			this.jumpTrack=0;
 			this.yV=-this.yV*this.elasticity;
+			this.showTail=false;
 		}
 		//friction
 		if(this.xV>0)

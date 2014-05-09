@@ -441,6 +441,10 @@ function mainDraw() {
 	curMap.draw(camera);
 	for(var i=0;i<people.length;i++)
 	{
+		if(people[i].showTail)
+		{
+			people[i].drawTail(canvas,camera);
+		}
 		people[i].draw(canvas,camera);
 	}
 	monsta.draw(canvas,camera);
@@ -478,6 +482,12 @@ function mainUpdate()
 	}*/
 	if(controller.pad)
 	{
+		if(controller.buttons[7].check())
+		{
+			miles.x=220;
+			miles.y=170;
+		}
+	
 		if(controller.buttons[1].check())
 		{
 			if(miles.crouching)
@@ -503,6 +513,19 @@ function mainUpdate()
 			}else
 			{
 				miles.crouching=false;
+			}
+		}else
+		{
+			if(controller.buttons[0].checkDown())
+			{
+				miles.equip(noHelmet);
+			}
+		}
+		if(controller.buttons[3].check())
+		{
+			if(miles.jumpTrack>0)
+			{
+				miles.pound();
 			}
 		}
 		if(controller.buttons[5].check())
@@ -554,10 +577,21 @@ function mainUpdate()
 	{
 		speedMulti=3;
 		miles.speedFactor=2;
+		miles.showTail=true;
+		miles.tailLength=2;
+		if(miles.tail.length>2)
+		{
+			miles.tail.splice(0,miles.tail.length-2);
+		}
 	}else
 	{
 		miles.speedFactor=1;
 		speedMulti=1;
+		if(!miles.pounding)
+		{
+			miles.showTail=false;
+		}
+		miles.tailLength=5;
 	}
 	
 	
