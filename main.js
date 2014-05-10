@@ -5,7 +5,7 @@ miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 people.push(miles);
 
-camera.center(miles);
+//camera.center(miles);
 camera.follow(miles);
 
 document.body.addEventListener("click", mouseClick, false);
@@ -290,7 +290,8 @@ function drawGUI(can)
 {
 	can.fillStyle="white";
 	can.fillText("Player: "+miles.x+","+miles.y,25,25);
-	can.fillText("Camera: "+camera.x+","+camera.y,25,40);
+	can.fillText("tiles: "+miles.tileX+","+miles.tileY,25,40);
+	can.fillText("Camera: "+camera.x+","+camera.y,25,55);
 	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
 	can.fillText("Jumps: "+Math.floor(miles.numJumps-miles.jumpTrack),755,55);
 }

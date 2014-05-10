@@ -56,8 +56,10 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		mapDirty=true;
         if(this.zoom==1)
 		{
-			tax=targ.x-26;// * Math.pow(2, curMap.zoom-1);
-			tay=targ.y-20;// * Math.pow(2, curMap.zoom-1);
+			//tax=targ.x-26;// * Math.pow(2, curMap.zoom-1);
+			tax=targ.tileX-26;
+			//console.log("cioc");
+			tay=targ.tileY-20;// * Math.pow(2, curMap.zoom-1);
 		}
 		else if(this.zoom==2){
 			 tax=targ.x-46;// * Math.pow(2, curMap.zoom-1);

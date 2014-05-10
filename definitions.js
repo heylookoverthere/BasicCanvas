@@ -3,6 +3,8 @@ var tabbed=false;
 var keydown={};
 var multiplayer=false;
 var holdInput=false;
+
+var tileSize=16;
 // Prevent the backspace key from navigating back.
 $(document).unbind('keydown').bind('keydown', function (event) {
     var doPrevent = false;

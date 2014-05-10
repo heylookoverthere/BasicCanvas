@@ -134,8 +134,10 @@ function dude()
 		this.skinColor="#7F3300";
 	}
 	this.sleeveColor="#404040"
-	this.x=120;//this seems to be tile X
-	this.y=170;
+	this.x=120*tileSize;//this seems to be straight X, camera uses tile X
+	this.y=170*tileSize;
+	this.tileX=Math.floor(this.x/tileSize);
+	this.tileY=Math.floor(this.y/tileSize);
 	this.xV=0;
 	this.yV=0;
 	this.elasticity=.3;
@@ -205,7 +207,8 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {
 	can.save();
 	//can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
-	can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
+	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
+	can.translate((this.x-cam.x*16)*cam.zoom,(this.y-cam.y*16)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
@@ -248,7 +251,8 @@ dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
 	{
 		can.save();
 		can.globalAlpha=0.1;
-		can.translate((this.tail[i].x+cam.x)*cam.zoom,(this.tail[i].y+cam.y)*cam.zoom);
+		can.translate((this.tail[i].x-cam.x*16)*cam.zoom,(this.tail[i].y-cam.y*16)*cam.zoom);
+		//can.translate(CANVAS_WIDTH/2+this.tail[i].x,CANVAS_HEIGHT/2+this.tail[i].y);
 		can.scale(cam.zoom,cam.zoom);
 		this.legSprites[this.facing].draw(can, 0,0);
 		this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
@@ -456,8 +460,10 @@ dude.prototype.update=function()
 
 		mapDirty=true;
 	}
-	this.x=Math.floor(this.x);
-	this.y=Math.floor(this.y);
+	/*this.x=Math.floor(this.x);
+	this.y=Math.floor(this.y);*/
+	this.tileX=Math.floor(this.x/16);
+	this.tileY=Math.floor(this.y/16);
 };	
 
 dude.prototype.equip=function(thing)
