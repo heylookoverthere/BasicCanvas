@@ -291,7 +291,7 @@ function drawGUI(can)
 	can.fillStyle="white";
 	can.fillText("Player: "+miles.x+","+miles.y,25,25);
 	can.fillText("tiles: "+miles.tileX+","+miles.tileY,25,40);
-	can.fillText("Camera: "+camera.x+","+camera.y,25,55);
+	can.fillText("Camera: "+camera.tileX+","+camera.tileY,25,55);
 	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
 	can.fillText("Jumps: "+Math.floor(miles.numJumps-miles.jumpTrack),755,55);
 }
@@ -698,26 +698,26 @@ function mainUpdate()
 	{
 		if(keydown.up)
 		{
-			camera.y-=camera.moveSpeed*camera.zoomMove;
-			if(camera.y<0) {camera.y=0;}
+			camera.tileY-=camera.moveSpeed*camera.zoomMove;
+			if(camera.tileY<0) {camera.tileY=0;}
 			mapDirty=true;
 		}
 		if(keydown.down)
 		{
-			camera.y+=camera.moveSpeed*camera.zoomMove;
-			if(camera.y>curMap.height-camera.height) {camera.y=curMap.height-camera.height;}
+			camera.tileY+=camera.moveSpeed*camera.zoomMove;
+			if(camera.tileY>curMap.height-camera.height) {camera.tileY=curMap.height-camera.height;}
 			mapDirty=true;
 		}
 		if(keydown.right)
 		{
-			camera.x+=camera.moveSpeed*camera.zoomMove;
-			if(camera.x>curMap.width-camera.width) {camera.x=curMap.width-camera.width;}
+			camera.tileX+=camera.moveSpeed*camera.zoomMove;
+			if(camera.tileX>curMap.width-camera.width) {camera.tileX=curMap.width-camera.width;}
 			mapDirty=true;
 		}
 		if(keydown.left)
 		{
-			camera.x-=camera.moveSpeed*camera.zoomMove;
-			if(camera.x<0) {camera.x=0;}//todo
+			camera.tileX-=camera.moveSpeed*camera.zoomMove;
+			if(camera.tileX<0) {camera.tileX=0;}//todo
 			mapDirty=true;
 		}
 	}

@@ -206,9 +206,9 @@ function dude()
 dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {
 	can.save();
-	//can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+	//can.translate((this.x+cam.tileX)*cam.zoom,(this.y+cam.tileY)*cam.zoom);
 	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
-	can.translate((this.x-cam.x*16)*cam.zoom,(this.y-cam.y*16)*cam.zoom);
+	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
@@ -251,7 +251,7 @@ dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
 	{
 		can.save();
 		can.globalAlpha=0.1;
-		can.translate((this.tail[i].x-cam.x*16)*cam.zoom,(this.tail[i].y-cam.y*16)*cam.zoom);
+		can.translate((this.tail[i].x-cam.tileX*16)*cam.zoom,(this.tail[i].y-cam.tileY*16)*cam.zoom);
 		//can.translate(CANVAS_WIDTH/2+this.tail[i].x,CANVAS_HEIGHT/2+this.tail[i].y);
 		can.scale(cam.zoom,cam.zoom);
 		this.legSprites[this.facing].draw(can, 0,0);
@@ -430,9 +430,9 @@ dude.prototype.update=function()
 	
 		this.x+=this.xV;
 		this.y+=this.yV;
-		if(this.y>314)
+		if(this.y>curMap.height*16-33)
 		{
-			this.y=314;
+			this.y=curMap.height*16-33;
 			this.falling=false;
 			this.pounding=false;
 			this.jumpTrack=0;

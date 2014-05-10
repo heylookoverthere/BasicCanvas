@@ -128,10 +128,10 @@ particleSystem.prototype.draw=function(can,cam){
 				}
 				if(this.particles[i].textured)
 				{
-					this.particles[i].sprite.draw(can, this.particles[i].x+cam.x,this.particles[i].y+cam.y);
+					this.particles[i].sprite.draw(can, this.particles[i].x+cam.tileX,this.particles[i].y+cam.tileY);
 				}else
 				{
-					can.fillRect(this.particles[i].x+cam.x, this.particles[i].y+cam.y, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
+					can.fillRect(this.particles[i].x+cam.tileX, this.particles[i].y+cam.tileY, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
 				}
 			}
 		}

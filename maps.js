@@ -1,6 +1,8 @@
 var camera = {  //represents the camera, aka what part of the map is on screen
     x: 0,
     y: 0,
+	tileX:0,
+	tileY:0,
     width: 60,
     height: 40,
     zoom: 1,
@@ -30,24 +32,24 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	centerX: function() {
         if(this.zoom==1)
 		{
-			return this.x+26;// * Math.pow(2, curMap.zoom-1);
+			return this.tileX+26;// * Math.pow(2, curMap.zoom-1);
 		}
 		else if(this.zoom==2){
-			return this.x+46;// * Math.pow(2, curMap.zoom-1);
+			return this.tileX+46;// * Math.pow(2, curMap.zoom-1);
 		}else if(this.zoom==3){
-			 return this.x+78;// * Math.pow(2, curMap.zoom-1);
+			 return this.tileX+78;// * Math.pow(2, curMap.zoom-1);
 		}
 
     },
 	centerY: function() {
         if(this.zoom==1)
 		{
-			return this.y+20;// * Math.pow(2, curMap.zoom-1);
+			return this.tileY+20;// * Math.pow(2, curMap.zoom-1);
 		}
 		else if(this.zoom==2){
-			return this.y+40;
+			return this.tileY+40;
 		}else if(this.zoom==3){
-			return this.y+60;
+			return this.tileY+60;
 		}
 
     },
@@ -73,8 +75,8 @@ var camera = {  //represents the camera, aka what part of the map is on screen
         if (tax>MAP_WIDTH-this.width) {tax=MAP_WIDTH-this.width;}
         if (tay>MAP_HEIGHT-this.height) {tay=MAP_HEIGHT-this.height;}
 
-        this.x=tax;
-        this.y=tay;
+        this.tileX=tax;
+        this.tileY=tay;
     },
 	follow: function(targ){
 		this.following=targ;
@@ -96,47 +98,47 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 
 		if(this.panning){
 			mapDirty=true;
-			if((this.x<this.panX)  && (this.x<MAP_WIDTH-(this.width* this.zoom)))
+			if((this.tileX<this.panX)  && (this.tileX<MAP_WIDTH-(this.width* this.zoom)))
 			{
-				this.x+=this.panSpeed;
-				if(this.x>this.panX)
+				this.tileX+=this.panSpeed;
+				if(this.tileX>this.panX)
 				{
-					this.x=this.panX;
+					this.tileX=this.panX;
 				}
-			}else if((this.x>this.panX)  && (this.x>1))
+			}else if((this.tileX>this.panX)  && (this.tileX>1))
 			{
 
-				this.x-=this.panSpeed;
-				if(this.x<this.panX)
+				this.tileX-=this.panSpeed;
+				if(this.tileX<this.panX)
 				{
-					this.x=this.panX;
+					this.tileX=this.panX;
 				}
 			}
-			if((this.y<this.panY) && (this.y<MAP_HEIGHT-(this.height* this.zoom))) //todo
+			if((this.tileY<this.panY) && (this.tileY<MAP_HEIGHT-(this.height* this.zoom))) //todo
 			{
 				
-				this.y+=this.panSpeed;
-				if(this.y>this.panY)
+				this.tileY+=this.panSpeed;
+				if(this.tileY>this.panY)
 				{
-					this.y=this.panY;
+					this.tileY=this.panY;
 				}
-			}else if((this.y>this.panY) && (this.y>1))
+			}else if((this.tileY>this.panY) && (this.tileY>1))
 			{
-				this.y-=this.panSpeed;
-				if(this.y<this.panY)
+				this.tileY-=this.panSpeed;
+				if(this.tileY<this.panY)
 				{
-					this.y=this.panY;
+					this.tileY=this.panY;
 				}
 			}
-			if((this.x==this.panX) && (this.y==this.panY))
+			if((this.tileX==this.panX) && (this.tileY==this.panY))
 			{
 				this.panning=false;
 			}
-			if((this.x>MAP_WIDTH-((this.width+this.zoom)* this.zoom)) && (this.y>MAP_HEIGHT-((this.height+this.zoom)* this.zoom)))
+			if((this.tileX>MAP_WIDTH-((this.width+this.zoom)* this.zoom)) && (this.tileY>MAP_HEIGHT-((this.height+this.zoom)* this.zoom)))
 			{
 				this.panning=false;
 			}
-			if((this.x<2) && (this.y<2))
+			if((this.tileX<2) && (this.tileY<2))
 			{
 				this.panning=false;
 			}
@@ -145,22 +147,22 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	},
     check: function() {
 		if(this.zoom==1){
-			this.x.clamp(0, MAP_WIDTH-60);
-			this.y.clamp(0, MAP_HEIGHT-40);
+			this.tileX.clamp(0, MAP_WIDTH-60);
+			this.tileY.clamp(0, MAP_HEIGHT-40);
 		}else if(this.zoom==2){
-		     this.x.clamp(0, MAP_WIDTH-60);
-			 this.y.clamp(0, MAP_HEIGHT-40);
+		     this.tileX.clamp(0, MAP_WIDTH-60);
+			 this.tileY.clamp(0, MAP_HEIGHT-40);
 		}else if(this.zoom==3){
-			this.x.clamp(0, MAP_WIDTH-60);
-			this.y.clamp(0, MAP_HEIGHT-40);//todo
+			this.tileX.clamp(0, MAP_WIDTH-60);
+			this.tileY.clamp(0, MAP_HEIGHT-40);//todo
 		}
         //if(this.zoom>1) {tx=0;ty=0;x=0;y=0;return;}
     },
     rX: function(fx) {
-        return fx-this.x;
+        return fx-this.tileX;
     },
     rY: function(fy) {
-        return fy-this.y;
+        return fy-this.tileY;
     }
 };
 
@@ -177,30 +179,30 @@ Tile.prototype.width = 16;
 Tile.prototype.height = 16;
 Tile.prototype.draw = function(cam) { 
     if(this.data==TileType.Grass){
-        tileSprite[TileType.Grass].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        tileSprite[TileType.Grass].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==TileType.Mountains){
-	tileSprite[TileType.Mountains].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+	tileSprite[TileType.Mountains].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==TileType.Swamp){
-        tileSprite[TileType.Swamp].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        tileSprite[TileType.Swamp].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==TileType.Forest){
-        tileSprite[TileType.Forest].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16); 
+        tileSprite[TileType.Forest].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16); 
     }else if(this.data==TileType.Water){
-        tileSprite[TileType.Water+tileani].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        tileSprite[TileType.Water+tileani].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==TileType.Plains){
-        tileSprite[TileType.Plains].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        tileSprite[TileType.Plains].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==TileType.Ocean){
-        tileSprite[TileType.Ocean+tileani].draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        tileSprite[TileType.Ocean+tileani].draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else if(this.data==42){
-        watersprite.draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        watersprite.draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }else{  //if strange data, draw a solid color
         canvas.fillStyle = bColors[0]; 
-        canvas.fillRect((this.x-cam.x)*this.width, (this.y-cam.y)*this.height, this.width, this.height);
+        canvas.fillRect((this.x-cam.tileX)*this.width, (this.y-cam.tileY)*this.height, this.width, this.height);
     }
     if(this.cracked==1){
-        crackedsprite.draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        crackedsprite.draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }
     if(this.platform==1){
-        platformsprite.draw(canvas, (this.x-cam.x)*16, (this.y-cam.y)*16);
+        platformsprite.draw(canvas, (this.x-cam.tileX)*16, (this.y-cam.tileY)*16);
     }
     
 };
@@ -325,43 +327,43 @@ function Map(I) { //map object
 	I.minusScrollZoom = function(cam) {
         if (I.zoom == 1)
 		{
-			//I.zoom=3;cam.x-=20;cam.y-=13;
+			//I.zoom=3;cam.tileX-=20;cam.tileY-=13;
 			
 		} else if (I.zoom==2) 
 		{
-			I.zoom=1;cam.x+=30*Math.pow(2, I.zoom-1);cam.y+=20*Math.pow(2, I.zoom-1);
+			I.zoom=1;cam.tileX+=30*Math.pow(2, I.zoom-1);cam.tileY+=20*Math.pow(2, I.zoom-1);
 
 		} else 
 		{
-			I.zoom=2;cam.x+=30*Math.pow(2, I.zoom-1);cam.y+=20*Math.pow(2, I.zoom-1);			
+			I.zoom=2;cam.tileX+=30*Math.pow(2, I.zoom-1);cam.tileY+=20*Math.pow(2, I.zoom-1);			
 		}
-		if(cam.x<0)
+		if(cam.tileX<0)
 		{
-			cam.x=0;
+			cam.tileX=0;
 		}
-		if(cam.y<0)
+		if(cam.tileY<0)
 		{
-			cam.y=0;
+			cam.tileY=0;
 		}
 		if(I.zoom==0)
 		{
-			if(cam.x>MAP_WIDTH-60)
+			if(cam.tileX>MAP_WIDTH-60)
 			{
-				cam.x=MAP_WIDTH-60;
+				cam.tileX=MAP_WIDTH-60;
 			}
-			if(cam.y>MAP_HEIGHT-40)
+			if(cam.tileY>MAP_HEIGHT-40)
 			{
-				cam.y=MAP_HEIGHT-40;
+				cam.tileY=MAP_HEIGHT-40;
 			}
 		}else if(I.zoom==2)
 		{
-			if(cam.x>MAP_WIDTH-30)
+			if(cam.tileX>MAP_WIDTH-30)
 			{
-				cam.x=MAP_WIDTH-30;
+				cam.tileX=MAP_WIDTH-30;
 			}
-			if(cam.y>MAP_HEIGHT-20)
+			if(cam.tileY>MAP_HEIGHT-20)
 			{
-				cam.y=MAP_HEIGHT-20;
+				cam.tileY=MAP_HEIGHT-20;
 			}
 		}
         cam.zoom=I.zoom;
@@ -372,43 +374,43 @@ function Map(I) { //map object
 	I.minusZoom = function(cam) {
         if (I.zoom == 1)
 		{
-			//I.zoom=3;cam.x-=20;cam.y-=13;
+			//I.zoom=3;cam.tileX-=20;cam.tileY-=13;
 			
 		} else if (I.zoom==2) 
 		{
-			I.zoom=1;cam.x+=30*Math.pow(2, I.zoom-1);cam.y+=20*Math.pow(2, I.zoom-1);
+			I.zoom=1;cam.tileX+=30*Math.pow(2, I.zoom-1);cam.tileY+=20*Math.pow(2, I.zoom-1);
 
 		} else 
 		{
-			I.zoom=2;cam.x+=30*Math.pow(2, I.zoom-1);cam.y+=20*Math.pow(2, I.zoom-1);			
+			I.zoom=2;cam.tileX+=30*Math.pow(2, I.zoom-1);cam.tileY+=20*Math.pow(2, I.zoom-1);			
 		}
-		if(cam.x<0)
+		if(cam.tileX<0)
 		{
-			cam.x=0;
+			cam.tileX=0;
 		}
-		if(cam.y<0)
+		if(cam.tileY<0)
 		{
-			cam.y=0;
+			cam.tileY=0;
 		}
 		if(I.zoom==0)
 		{
-			if(cam.x>MAP_WIDTH-60)
+			if(cam.tileX>MAP_WIDTH-60)
 			{
-				cam.x=MAP_WIDTH-60;
+				cam.tileX=MAP_WIDTH-60;
 			}
-			if(cam.y>MAP_HEIGHT-40)
+			if(cam.tileY>MAP_HEIGHT-40)
 			{
-				cam.y=MAP_HEIGHT-40;
+				cam.tileY=MAP_HEIGHT-40;
 			}
 		}else if(I.zoom==2)
 		{
-			if(cam.x>MAP_WIDTH-30)
+			if(cam.tileX>MAP_WIDTH-30)
 			{
-				cam.x=MAP_WIDTH-30;
+				cam.tileX=MAP_WIDTH-30;
 			}
-			if(cam.y>MAP_HEIGHT-20)
+			if(cam.tileY>MAP_HEIGHT-20)
 			{
-				cam.y=MAP_HEIGHT-20;
+				cam.tileY=MAP_HEIGHT-20;
 			}
 		}
         cam.zoom=I.zoom;
@@ -419,40 +421,40 @@ function Map(I) { //map object
     I.setZoom = function(cam) {
         if (I.zoom == 1) 
 		{
-			I.zoom=2;cam.x-=30*Math.pow(2, I.zoom-1);cam.y-=20*Math.pow(2, I.zoom-1);
+			I.zoom=2;cam.tileX-=30*Math.pow(2, I.zoom-1);cam.tileY-=20*Math.pow(2, I.zoom-1);
 		} else if (I.zoom==2) 
 		{
-			I.zoom=3;cam.x-=30*Math.pow(2, I.zoom-1);cam.y-=20*Math.pow(2, I.zoom-1);
+			I.zoom=3;cam.tileX-=30*Math.pow(2, I.zoom-1);cam.tileY-=20*Math.pow(2, I.zoom-1);
 		} else {
-			//I.zoom=1;cam.x+=50;cam.y+=33;
+			//I.zoom=1;cam.tileX+=50;cam.tileY+=33;
 		}
-		if(cam.x<0)
+		if(cam.tileX<0)
 		{
-			cam.x=0;
+			cam.tileX=0;
 		}
-		if(cam.y<0)
+		if(cam.tileY<0)
 		{
-			cam.y=0;
+			cam.tileY=0;
 		}
 		if(I.zoom==0)
 		{
-			if(cam.x>MAP_WIDTH-60)
+			if(cam.tileX>MAP_WIDTH-60)
 			{
-				cam.x=MAP_WIDTH-60;
+				cam.tileX=MAP_WIDTH-60;
 			}
-			if(cam.y>MAP_HEIGHT-40)
+			if(cam.tileY>MAP_HEIGHT-40)
 			{
-				cam.y=MAP_HEIGHT-40;
+				cam.tileY=MAP_HEIGHT-40;
 			}
 		}else if(I.zoom==2)
 		{
-			if(cam.x>MAP_WIDTH-30)
+			if(cam.tileX>MAP_WIDTH-30)
 			{
-				cam.x=MAP_WIDTH-30;
+				cam.tileX=MAP_WIDTH-30;
 			}
-			if(cam.y>MAP_HEIGHT-20)
+			if(cam.tileY>MAP_HEIGHT-20)
 			{
-				cam.y=MAP_HEIGHT-20;
+				cam.tileY=MAP_HEIGHT-20;
 			}
 		}
         cam.zoom=I.zoom;
@@ -466,18 +468,18 @@ function Map(I) { //map object
 		//console.log("yar");
 		cam.zoom=I.zoom;
         cam.check();
-		var poopx=cam.x+cam.width*Math.pow(2, I.zoom-1);
-		var poopy=cam.y+cam.height*Math.pow(2, I.zoom-1);
+		var poopx=cam.tileX+cam.width*Math.pow(2, I.zoom-1);
+		var poopy=cam.tileY+cam.height*Math.pow(2, I.zoom-1);
 		if(poopx>MAP_WIDTH)
 		{
-			//poopx=MAP_WIDTH-(cam.x+cam.width);
+			//poopx=MAP_WIDTH-(cam.tileX+cam.width);
 		}
 		if(poopy>MAP_HEIGHT)
 		{
-			poopy=MAP_HEIGHT-(cam.y+cam.height);
+			poopy=MAP_HEIGHT-(cam.tileY+cam.height);
 		}
-        for (i=cam.x;i<poopx; i+=I.zoom){
-            for (j=cam.y;j<poopy; j+=I.zoom){
+        for (i=cam.tileX;i<poopx; i+=I.zoom){
+            for (j=cam.tileY;j<poopy; j+=I.zoom){
                 var tileTypes = {};
                 for( var ii=0; ii<I.zoom; ii+=1 ) {
                     if ((i+ii>=MAP_WIDTH)) { continue;}
@@ -500,14 +502,14 @@ function Map(I) { //map object
                     }
                 }
                 if(dominantType.type && dominantType.type <20) {
-					tileSprite[dominantType.type].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[dominantType.type].draw(canvas, (i-cam.tileX)*16/Math.pow(2,I.zoom-1), (j-cam.tileY)*16/Math.pow(2,I.zoom-1));
                 }else if(dominantType.type&& dominantType.type<24){
-					tileSprite[20+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[20+tileani].draw(canvas, (i-cam.tileX)*16/Math.pow(2,I.zoom-1), (j-cam.tileY)*16/Math.pow(2,I.zoom-1));
 				}else if (dominantType.type&& dominantType.type<28) {
-					tileSprite[24+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[24+tileani].draw(canvas, (i-cam.tileX)*16/Math.pow(2,I.zoom-1), (j-cam.tileY)*16/Math.pow(2,I.zoom-1));
 				}else 
 				{
-					tileSprite[TileType.Lava+tileani].draw(canvas, (i-cam.x)*16/Math.pow(2,I.zoom-1), (j-cam.y)*16/Math.pow(2,I.zoom-1));
+					tileSprite[TileType.Lava+tileani].draw(canvas, (i-cam.tileX)*16/Math.pow(2,I.zoom-1), (j-cam.tileY)*16/Math.pow(2,I.zoom-1));
 				}
             }
         }
@@ -648,7 +650,7 @@ function Map(I) { //map object
 
         canvas.globalAlpha = 0.35;
 		canvas.fillStyle = "white";
-        canvas.fillRect(x+cam.x, y+cam.y, cam.width*I.zoom, cam.height*I.zoom);
+        canvas.fillRect(x+cam.tileX, y+cam.tileY, cam.width*I.zoom, cam.height*I.zoom);
 		canvas.globalAlpha=1;
 	   // canvas.restore();
     };
