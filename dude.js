@@ -68,7 +68,7 @@ var numshirts=9;
 var numpants=7;
 var numhelmets=8;
 var numfaces=4;
-var numhair=8;
+var numhair=9;
 for(var i=0;i<numshirts;i++)
 {
 	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest));
@@ -91,16 +91,49 @@ function point()
 	x=0;
 	y=0;
 }
+function bone(anchor)
+{
+	this.x1=anchor.x;
+	this.y1=anchor.y;
+	this.angle=0;
+	this.length=5;
+	
+	/*will be calculated, based on angle and length.
+	this.x2=0;
+	this.y2=0;
+	*/
+	this.joint1=anchor;
+	this.joint2=null;
+	
+}
+
+bone.prototype.draw=function(can,cam)
+{
+
+};
+
+function arm(that,side)
+{
+	this.backArm=new bone(that);
+	//this.foreArm=new bone(that.backArm);
+	
+ }
+
 
 function dude()
 {	
+	this.arms=[];
+	this.arms.push(new arm(this,0));
+	this.arms.push(new arm(this,1));
 	this.alive=true;
 	this.race=1;
+	this.skinColor="#FFBC59";
 	if(Math.random()*10>5)
 	{
 		this.race=0;
+		this.skinColor="#7F3300";
 	}
-	
+	this.sleeveColor="#404040"
 	this.x=220;//this seems to matter, tilex doesnt
 	this.y=170;
 	this.xV=0;
@@ -399,6 +432,10 @@ dude.prototype.update=function()
 			this.pounding=false;
 			this.jumpTrack=0;
 			this.yV=-this.yV*this.elasticity;
+			if(Math.abs(this.yV)<0.5)
+			{
+				this.yV=0;
+			}
 			this.showTail=false;
 		}
 		//friction
@@ -411,8 +448,15 @@ dude.prototype.update=function()
 			this.xV+=friction;
 			this.xV+=this.friction;
 		}
+		if(Math.abs(this.xV)<0.05)
+		{
+			this.xV=0;
+		}
+
 		mapDirty=true;
 	}
+	this.x=Math.floor(this.x);
+	this.y=Math.floor(this.y);
 };	
 
 dude.prototype.equip=function(thing)

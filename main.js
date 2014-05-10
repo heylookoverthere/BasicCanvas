@@ -289,7 +289,8 @@ numberkeys.push(new akey("9"));
 function drawGUI(can)
 {
 	can.fillStyle="white";
-	can.fillText("Coords: "+miles.x+","+miles.y,25,25);
+	can.fillText("Player: "+miles.x+","+miles.y,25,25);
+	can.fillText("Camera: "+camera.x+","+camera.y,25,40);
 	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
 	can.fillText("Jumps: "+Math.floor(miles.numJumps-miles.jumpTrack),755,55);
 }
@@ -519,6 +520,9 @@ function mainUpdate()
 			if(controller.buttons[0].checkDown())
 			{
 				miles.equip(noHelmet);
+				miles.x=Math.floor(miles.x);
+				miles.y=Math.floor(miles.y);
+				camera.follow(miles);
 			}
 		}
 		if(controller.buttons[3].check())
@@ -682,30 +686,30 @@ function mainUpdate()
 				}
 			}
 		}
-	}else
+	}
+	if(true)
 	{
 		if(keydown.up)
 		{
-			miles.y-=miles.speed;
-			if(miles.y<0) {miles.y=0;}
+			camera.y-=camera.moveSpeed*camera.zoomMove;
+			if(camera.y<0) {camera.y=0;}
 			mapDirty=true;
 		}
 		if(keydown.down)
 		{
-			miles.y+=miles.speed;
-			if(miles.y>600) {miles.y=600;}
+			camera.y+=camera.moveSpeed*camera.zoomMove;
 			mapDirty=true;
 		}
 		if(keydown.left)
 		{
-			miles.x-=miles.speed;
-			if(miles.x<0) {miles.x=0;}
+			camera.x+=camera.moveSpeed*camera.zoomMove;
+			if(camera.x>999) {camera.x=999;}
 			mapDirty=true;
 		}
 		if(keydown.right)
 		{
-			miles.x+=miles.speed;
-			if(miles.x>600) {miles.x=600;}
+			camera.x-=camera.moveSpeed*camera.zoomMove;
+			if(camera.x<0) {camera.x=0;}//todo
 			mapDirty=true;
 		}
 	}

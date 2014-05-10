@@ -8,6 +8,8 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	following: null,
 	panX: 0,
 	panY: 0,
+	zoomMove: 1,
+	moveSpeed: 2,
 	panSpeed: 3,
 	pan: function(x,y) {
 		this.panning=true;
