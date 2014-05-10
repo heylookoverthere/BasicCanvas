@@ -548,7 +548,9 @@ function Map(I) { //map object
 		imageObj.onload = function() {
 				mapCanvas.drawImage(imageObj, 0, 0);
 				MAP_WIDTH=imageObj.width;
-				MAP_HEIGHT=imageObj.height;				
+				MAP_HEIGHT=imageObj.height;	
+				I.width=MAP_WIDTH;
+				I.height=MAP_HEIGHT;
 				mapBitmap = mapCanvas.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
 		for( var i=0; i<MAP_WIDTH * MAP_HEIGHT * 4; i+=4 ) {//TODO/PROBLEMMAPWIDTH?
 		  var rgba = [mapBitmap.data[i], mapBitmap.data[i+1], mapBitmap.data[i+2], mapBitmap.data[i+3]];
@@ -607,7 +609,11 @@ function Map(I) { //map object
         }
 
         radarBitmap = radarCanvas.getImageData(0, 0, MAP_WIDTH, MAP_HEIGHT);
-
+		var idata = radarBitmap.data;
+		for (var i = 0; i < idata.length; i += 4) 
+		{
+			idata[i+3] = 255;
+		}
     };
 
     I.drawRadar= function (cam,x,y,arm) {
@@ -615,7 +621,7 @@ function Map(I) { //map object
 	
         cam.check();
         //canvas.save();
-        canvas.globalAlpha = 0.75;
+        //canvas.globalAlpha = 0.55;
         canvas.putImageData(radarBitmap,x,y);
 		//canvas.drawImage(radarCanvas,x,y);
         
@@ -639,7 +645,7 @@ function Map(I) { //map object
         }*///todo
 
         canvas.globalAlpha = 0.35;
-        canvas.fillStyle = "white";
+		canvas.fillStyle = "white";
         canvas.fillRect(x+cam.x, y+cam.y, cam.width*I.zoom, cam.height*I.zoom);
 		canvas.globalAlpha=1;
 	   // canvas.restore();

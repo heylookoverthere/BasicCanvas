@@ -134,7 +134,7 @@ function dude()
 		this.skinColor="#7F3300";
 	}
 	this.sleeveColor="#404040"
-	this.x=220;//this seems to matter, tilex doesnt
+	this.x=120;//this seems to be tile X
 	this.y=170;
 	this.xV=0;
 	this.yV=0;
@@ -204,7 +204,8 @@ function dude()
 dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {
 	can.save();
-	can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+	//can.translate((this.x+cam.x)*cam.zoom,(this.y+cam.y)*cam.zoom);
+	can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);

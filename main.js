@@ -6,7 +6,7 @@ miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 people.push(miles);
 
 camera.center(miles);
-//camera.follow(miles);
+camera.follow(miles);
 
 document.body.addEventListener("click", mouseClick, false);
 //document.body.addEventListener("dblclick", mouseDblClick, false);
@@ -397,12 +397,14 @@ function mainMenuUpdate(){
 		{
 			mode=1;
 			gamestart=true;
+			curMap.buildMap("map4");
 		}
 	}
 	
 	if(startkey.check()){
 		mode=1;
 		gamestart=true;
+		curMap.buildMap("map4");
 	}
 	if(downkey.check()){
 		mmcur=!mmcur;
@@ -449,6 +451,10 @@ function mainDraw() {
 		people[i].draw(canvas,camera);
 	}
 	monsta.draw(canvas,camera);
+	
+	canvas.globalAlpha=0.4;
+	curMap.drawRadar(camera,665,350);
+	canvas.globalAlpha=1;
 	drawGUI(canvas);
 	
 };
@@ -698,15 +704,16 @@ function mainUpdate()
 		if(keydown.down)
 		{
 			camera.y+=camera.moveSpeed*camera.zoomMove;
-			mapDirty=true;
-		}
-		if(keydown.left)
-		{
-			camera.x+=camera.moveSpeed*camera.zoomMove;
-			if(camera.x>999) {camera.x=999;}
+			if(camera.y>curMap.height-camera.height) {camera.y=curMap.height-camera.height;}
 			mapDirty=true;
 		}
 		if(keydown.right)
+		{
+			camera.x+=camera.moveSpeed*camera.zoomMove;
+			if(camera.x>curMap.width-camera.width) {camera.x=curMap.width-camera.width;}
+			mapDirty=true;
+		}
+		if(keydown.left)
 		{
 			camera.x-=camera.moveSpeed*camera.zoomMove;
 			if(camera.x<0) {camera.x=0;}//todo
