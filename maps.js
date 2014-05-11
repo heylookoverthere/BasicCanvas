@@ -653,7 +653,8 @@ function Map(I) { //map object
 
     I.drawRadar= function (cam,x,y,arm) {
 		
-	
+		if(mode<1){return;}
+		if(!starting) {return;}
         cam.check();
         //canvas.save();
         //canvas.globalAlpha = 0.55;

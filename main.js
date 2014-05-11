@@ -1,4 +1,4 @@
-
+var debugInfo=false;
 var people=[];
 var miles=new dude();
 miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
@@ -634,7 +634,10 @@ function mainDraw() {
 	canvas.globalAlpha=0.4;
 	curMap.drawRadar(camera,665,350);
 	canvas.globalAlpha=1;
-	drawGUI(canvas);
+	if(debugInfo)
+	{
+		drawGUI(canvas);
+	}
 	
 };
 //------------MAIN LOOP-----------------------------------------
@@ -727,6 +730,7 @@ function mainUpdate()
 	if(debugkey.check())
 	{
 		//platformer=!platformer;
+		debugInfo=!debugInfo;
 	}
 	if(controller.buttons[6].check())
 	{
@@ -879,6 +883,7 @@ function mainUpdate()
 				{
 					miles.xV=-miles.maxSpeed*miles.speedFactor;
 				}
+				if(miles.x<0) {miles.x=0;}
 			}
 			if(controller.checkRight())
 			{
@@ -888,6 +893,7 @@ function mainUpdate()
 				{
 					miles.xV=miles.maxSpeed*miles.speedFactor;
 				}
+				if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
 			}
 		}
 	}

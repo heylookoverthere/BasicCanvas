@@ -462,7 +462,8 @@ dude.prototype.update=function()
 	}
 	/*this.x=Math.floor(this.x);
 	this.y=Math.floor(this.y);*/
-	
+	if(this.x<0) {this.x=0;}
+	if(this.x>(curMap.width-5)*tileSize) {this.x=(curMap.width-5)*tileSize}
 	this.tileX=this.x/16;
 	this.tileY=this.y/16;
 	/*this.tileX=Math.floor(this.x/16);
