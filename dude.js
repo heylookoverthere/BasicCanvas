@@ -462,8 +462,11 @@ dude.prototype.update=function()
 	}
 	/*this.x=Math.floor(this.x);
 	this.y=Math.floor(this.y);*/
-	this.tileX=Math.floor(this.x/16);
-	this.tileY=Math.floor(this.y/16);
+	
+	this.tileX=this.x/16;
+	this.tileY=this.y/16;
+	/*this.tileX=Math.floor(this.x/16);
+	this.tileY=Math.floor(this.y/16);*/
 };	
 
 dude.prototype.equip=function(thing)

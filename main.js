@@ -444,6 +444,8 @@ function worldMapUpdate(){
 //------------MAIN DRAW-----------------------------------------
 function mainDraw() {
 	curMap.draw(camera);
+	/*canvas.fillStyle="white";
+	canvas.fillRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);*/
 	for(var i=0;i<people.length;i++)
 	{
 		if(people[i].showTail)
@@ -614,24 +616,32 @@ function mainUpdate()
 			if(controller.pad.axes[1]===-1)
 			{
 				miles.y-=miles.speed*speedMulti;
+				//camera.y-=miles.speed*speedMulti;
+				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y<0) {miles.y=0;}
 				mapDirty=true;
 			}
 			if(controller.pad.axes[1]===1)
 			{
 				miles.y+=miles.speed*speedMulti;
+				//camera.y+=miles.speed*speedMulti;
+				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y>curMap.height*tileSize-miles.height) {miles.y=(curMap.height-2)*tileSize}
 				mapDirty=true;
 			}
 			if(controller.pad.axes[0]===-1)
 			{
 				miles.x-=miles.speed*speedMulti;
+				//camera.x-=miles.speed*speedMulti;
+				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x<0) {miles.x=0;}
 				mapDirty=true;
 			}
 			if(controller.pad.axes[0]===1)
 			{
 				miles.x+=miles.speed*speedMulti;
+				//camera.x+=miles.speed*speedMulti;
+				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x>curMap.width*tileSize-miles.width) {miles.x=(curMap.width-2)*tileSize}
 				mapDirty=true;
 			}
@@ -714,7 +724,7 @@ function mainUpdate()
 		if(keydown.right)
 		{
 			camera.x+=camera.moveSpeed*camera.zoomMove;
-			camera.updateTile();
+			camera.update();
 			if(camera.tileX>curMap.width-camera.width) {camera.tileX=curMap.width-camera.width;}
 			mapDirty=true;
 		}

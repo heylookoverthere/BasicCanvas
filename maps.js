@@ -88,9 +88,9 @@ var camera = {  //represents the camera, aka what part of the map is on screen
         if(this.zoom==1)
 		{
 			//tax=targ.x-26;// * Math.pow(2, curMap.zoom-1);
-			tax=targ.x;
+			tax=targ.x-300;
 			//console.log("cioc");
-			tay=targ.y;
+			tay=targ.y-300;
 		}
 		else if(this.zoom==2){
 			 tax=targ.x-46;// * Math.pow(2, curMap.zoom-1);
@@ -509,8 +509,8 @@ function Map(I) { //map object
 		{
 			poopy=MAP_HEIGHT-(cam.tileY+cam.height);
 		}
-        for (i=cam.tileX;i<poopx; i+=I.zoom){
-            for (j=cam.tileY;j<poopy; j+=I.zoom){
+        for (i=Math.floor(cam.tileX);i<poopx; i+=I.zoom){
+            for (j=Math.floor(cam.tileY);j<poopy; j+=I.zoom){
                 var tileTypes = {};
                 for( var ii=0; ii<I.zoom; ii+=1 ) {
                     if ((i+ii>=MAP_WIDTH)) { continue;}
