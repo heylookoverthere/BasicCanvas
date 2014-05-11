@@ -291,7 +291,8 @@ function drawGUI(can)
 	can.fillStyle="white";
 	can.fillText("Player: "+miles.x+","+miles.y,25,25);
 	can.fillText("tiles: "+miles.tileX+","+miles.tileY,25,40);
-	can.fillText("Camera: "+camera.tileX+","+camera.tileY,25,55);
+	can.fillText("Camera: "+camera.x+","+camera.y,25,55);
+	can.fillText("tile: "+camera.tileX+","+camera.tileY,25,70);
 	can.fillText("HP: "+miles.hp+"/"+miles.maxHp ,755,40);
 	can.fillText("Jumps: "+Math.floor(miles.numJumps-miles.jumpTrack),755,55);
 }
@@ -619,7 +620,7 @@ function mainUpdate()
 			if(controller.pad.axes[1]===1)
 			{
 				miles.y+=miles.speed*speedMulti;
-				if(miles.y>600) {miles.y=600;}
+				if(miles.y>curMap.height*tileSize-miles.height) {miles.y=(curMap.height-2)*tileSize}
 				mapDirty=true;
 			}
 			if(controller.pad.axes[0]===-1)
@@ -631,7 +632,7 @@ function mainUpdate()
 			if(controller.pad.axes[0]===1)
 			{
 				miles.x+=miles.speed*speedMulti;
-				if(miles.x>600) {miles.x=600;}
+				if(miles.x>curMap.width*tileSize-miles.width) {miles.x=(curMap.width-2)*tileSize}
 				mapDirty=true;
 			}
 		}else
@@ -698,25 +699,29 @@ function mainUpdate()
 	{
 		if(keydown.up)
 		{
-			camera.tileY-=camera.moveSpeed*camera.zoomMove;
-			if(camera.tileY<0) {camera.tileY=0;}
+			camera.y-=camera.moveSpeed*camera.zoomMove;
+			camera.update();
+			if(camera.tileY<0) {camera.y=0; camera.tileY=0;}
 			mapDirty=true;
 		}
 		if(keydown.down)
 		{
-			camera.tileY+=camera.moveSpeed*camera.zoomMove;
-			if(camera.tileY>curMap.height-camera.height) {camera.tileY=curMap.height-camera.height;}
+			camera.y+=camera.moveSpeed*camera.zoomMove;
+			camera.update();
+			if(camera.tileY>curMap.height-camera.height) {camera.tileY=curMap.height-camera.height;camera.y=camera.tileY;}
 			mapDirty=true;
 		}
 		if(keydown.right)
 		{
-			camera.tileX+=camera.moveSpeed*camera.zoomMove;
+			camera.x+=camera.moveSpeed*camera.zoomMove;
+			camera.updateTile();
 			if(camera.tileX>curMap.width-camera.width) {camera.tileX=curMap.width-camera.width;}
 			mapDirty=true;
 		}
 		if(keydown.left)
 		{
-			camera.tileX-=camera.moveSpeed*camera.zoomMove;
+			camera.x-=camera.moveSpeed*camera.zoomMove;
+			camera.update();
 			if(camera.tileX<0) {camera.tileX=0;}//todo
 			mapDirty=true;
 		}

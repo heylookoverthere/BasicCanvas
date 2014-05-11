@@ -13,6 +13,10 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	zoomMove: 1,
 	moveSpeed: 2,
 	panSpeed: 3,
+	updateTile: function(){
+		this.tileX=Math.floor(this.x/tileSize);
+		this.tileY=Math.floor(this.y/tileSize);
+	},
 	pan: function(x,y) {
 		this.panning=true;
 		        if(this.zoom==1)
@@ -78,6 +82,33 @@ var camera = {  //represents the camera, aka what part of the map is on screen
         this.tileX=tax;
         this.tileY=tay;
     },
+	centerNew: function(targ) {
+        //if(this.zoom>1) {tx=0;ty=0;x=0;y=0;return;}
+		mapDirty=true;
+        if(this.zoom==1)
+		{
+			//tax=targ.x-26;// * Math.pow(2, curMap.zoom-1);
+			tax=targ.x;
+			//console.log("cioc");
+			tay=targ.y;
+		}
+		else if(this.zoom==2){
+			 tax=targ.x-46;// * Math.pow(2, curMap.zoom-1);
+			tay=targ.y-40;
+		}else if(this.zoom==3){
+			 tax=targ.x-78;// * Math.pow(2, curMap.zoom-1);
+			tay=targ.y-60;
+		}
+        if (tax<0) {tax=0;}
+        if (tay<0) {tay=0;}
+        if (tax>MAP_WIDTH-this.width) {tax=MAP_WIDTH-this.width;}
+        if (tay>MAP_HEIGHT-this.height) {tay=MAP_HEIGHT-this.height;}
+
+        this.x=tax;
+        this.y=tay;
+		this.tileX=Math.floor(this.x/16);
+		this.tileY=Math.floor(this.y/16);
+    },
 	follow: function(targ){
 		this.following=targ;
 	},
@@ -85,7 +116,7 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 		this.following=null;
 	},
 	update: function(){
-
+		this.updateTile();
 		if (this.following)
 		{
 			if(!this.following.alive)
