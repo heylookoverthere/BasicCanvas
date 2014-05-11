@@ -95,8 +95,8 @@ function bone(anchor)
 {
 	this.x1=anchor.x;
 	this.y1=anchor.y;
-	this.angle=0;
-	this.length=5;
+	this.angle=90;
+	this.length=15;
 	
 	/*will be calculated, based on angle and length.
 	this.x2=0;
@@ -109,19 +109,56 @@ function bone(anchor)
 
 bone.prototype.draw=function(can,cam)
 {
+	canvas.save();
+	canvas.strokeStyle = "red";
+	canvas.beginPath();
+	canvas.lineWidth = 2;
 
+	canvas.moveTo(this.x1,this.y1);
+	if(false)//(this.joint2)
+	{
+		canvas.lineTo(joint2.x,joint2.y);
+	}else
+	{
+		var ax=	this.x1+Math.cos(Math.radians(this.angle))*this.length;
+		var ay=this.y1+Math.sin(Math.radians(this.angle))*this.length;
+		canvas.lineTo(ax,ay);
+	}
+	
+	canvas.closePath();
+	canvas.stroke();
+	canvas.restore();
 };
 
 function arm(that,side)
 {
 	this.backArm=new bone(that);
+	if(side==0)
+	{
+	
+	}else
+	{
+		
+	}
 	//this.foreArm=new bone(that.backArm);
 	
  }
-
+arm.prototype.draw=function(can,cam)
+{
+	this.backArm.draw(can,cam);
+	
+}
 
 function dude()
 {	
+	this.flashing=false;
+	this.flashMicroCounter=0;
+	this.flashMacroCounter=0;
+	this.flashSpeed=1;
+	this.flashRate=5;
+	this.flashFlag=false;
+	this.falshDuration=100;
+	this.flashAlpha=0.4;
 	this.arms=[];
 	this.arms.push(new arm(this,0));
 	this.arms.push(new arm(this,1));
@@ -203,9 +240,32 @@ function dude()
 	this.equipment[EquipSlots.Helmet]=noHelmet;
 	this.equipment[EquipSlots.Ring]=noRing;
 }
+
+dude.prototype.kill=function()
+{
+	this.hp=0;
+	this.alive=false;
+};
+
+dude.prototype.hurt=function(damage)
+{
+	this.flashing=true;
+	this.hp-=damage;
+	if(this.hp<1)
+	{
+		this.kill();
+	}
+		
+}
+
 dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {
+	if(!this.alive) {return;}
 	can.save();
+	if(this.flashFlag)
+	{
+		can.globalAlpha=this.flashAlpha;
+	}
 	//can.translate((this.x+cam.tileX)*cam.zoom,(this.y+cam.tileY)*cam.zoom);
 	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
 	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
@@ -240,13 +300,15 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 	}
-	
+	this.arms[0].draw(can,cam);
+	this.arms[1].draw(can,cam);
 	can.restore();
 };
 
 dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
 {
-	
+	if(!this.alive) {return;}
+	if(this.flashing){return;}
 	for(var i=0;i<this.tail.length;i++)
 	{
 		can.save();
@@ -370,6 +432,7 @@ dude.prototype.bigJump=function()
 };
 dude.prototype.update=function()
 {
+	if(!this.alive) {return;}
 	this.tailCount++;
 	if(true)//(this.tailCount>this.tailRate)
 	{
@@ -468,6 +531,23 @@ dude.prototype.update=function()
 	this.tileY=this.y/16;
 	/*this.tileX=Math.floor(this.x/16);
 	this.tileY=Math.floor(this.y/16);*/
+	if(this.flashing)
+	{
+		this.flashMicroCounter++;
+		if(this.flashMicroCounter>this.flashSpeed)
+		{
+			this.flashMicroCounter=0;
+			this.flashFlag=!this.flashFlag;
+			this.flashMacroCounter++;
+			if(this.flashMacroCounter>this.flashRate)
+			{
+				this.flashMacroCounter=0;
+				this.flashFlag=false;
+				this.flashing=false;
+			}
+			
+		}
+	}
 };	
 
 dude.prototype.equip=function(thing)
