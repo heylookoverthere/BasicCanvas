@@ -116,7 +116,7 @@ bone.prototype.draw=function(can,cam)
 {
 	//can.save();
 	can.globalAlpha=1;
-	can.strokeStyle = "red";
+	can.strokeStyle = "red";  //fuck you github.
 	can.beginPath();
 	can.lineWidth = 3;
 	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
