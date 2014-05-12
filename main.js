@@ -696,18 +696,34 @@ function mainUpdate()
 		
 		if(!platformer)
 		{
-			if(controller.buttons[0].checkDown())
+			/*if(controller.buttons[0].checkDown())
 			{
 				miles.crouching=true;
 			}else
 			{
 				miles.crouching=false;
+			}*/
+			if(controller.buttons[0].checkDown())
+			{
+				//miles.equip(noHelmet);
+				miles.arms[0].backArm.angle=195;
+				miles.arms[1].backArm.angle=345;
+			}else
+			{
+				miles.arms[0].backArm.angle=90;
+				miles.arms[1].backArm.angle=90;
 			}
 		}else
 		{
-			if(controller.buttons[0].check())
+			if(controller.buttons[0].checkDown())
 			{
-				miles.equip(noHelmet);
+				//miles.equip(noHelmet);
+				miles.arms[0].backArm.angle=195;
+				miles.arms[1].backArm.angle=345;
+			}else
+			{
+				miles.arms[0].backArm.angle=90;
+				miles.arms[1].backArm.angle=90;
 			}
 		}
 		if(controller.buttons[3].check())

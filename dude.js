@@ -66,7 +66,7 @@ legArmorList.push(noLegs);
 helmetList.push(noHelmet);
 var numshirts=9;
 var numpants=7;
-var numhelmets=8;
+var numhelmets=9;
 var numfaces=4;
 var numhair=9;
 for(var i=0;i<numshirts;i++)
@@ -116,18 +116,18 @@ bone.prototype.draw=function(can,cam)
 {
 	//can.save();
 	can.globalAlpha=1;
-	can.strokeStyle = "red";  //fuck you github.
+	can.strokeStyle = "red"; 
 	can.beginPath();
 	can.lineWidth = 3;
 	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
-	can.moveTo(this.joint1.x-cam.tileX,this.joint1.y-cam.tileY);
+	can.moveTo(this.joint1.x,this.joint1.y+this.body.crouchAdj);
 	if(true)//(this.joint2)
 	{
-		can.lineTo(this.joint2.x,this.joint2.y);
+		can.lineTo(this.joint2.x,this.joint2.y+this.body.crouchAdj);
 	}else
 	{
 		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.length;
-		var ay=this.joint1.y+Math.sin(Math.radians(this.angle))*this.length;
+		var ay=this.joint1.y+this.body.crouchAdj+Math.sin(Math.radians(this.angle))*this.length;
 		canvas.lineTo(ax-cam.tileX,ay-cam.tileY);
 	}
 	
@@ -136,14 +136,15 @@ bone.prototype.draw=function(can,cam)
 	//can.restore();
 };
 
-bone.prototype.drawNEW=function(can,cam)
+bone.prototype.drawNew=function(can,cam)
 {
 	//can.save();
 	can.globalAlpha=1;
-	can.strokeStyle = "red";
+	can.strokeStyle = "red"; 
 	can.beginPath();
 	can.lineWidth = 3;
-	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
+	//can.translate(0,0);
+	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
 	can.moveTo(this.joint1.x,this.joint1.y);
 	if(true)//(this.joint2)
 	{
@@ -152,7 +153,7 @@ bone.prototype.drawNEW=function(can,cam)
 	{
 		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.length;
 		var ay=this.joint1.y+Math.sin(Math.radians(this.angle))*this.length;
-		canvas.lineTo(ax,ay);
+		canvas.lineTo(ax-cam.tileX,ay-cam.tileY);
 	}
 	
 	can.closePath();
@@ -184,22 +185,22 @@ function arm(that,side)
  {
 	if(this.backArm.side==0)
 	{
-		this.backArm.joint1.x=this.body.x+6;
+		this.backArm.joint1.x=6;//this.body.x+6;
 	}else
 	{
-		this.backArm.joint1.x=this.body.x+24;
+		this.backArm.joint1.x=24//this.body.x+24;
 	}
-	this.backArm.joint1.y=this.body.y+15;
-	this.backArm.joint2.x=this.body.x+6;
-	this.backArm.joint2.y=this.body.y;
+	this.backArm.joint1.y=15+this.body.crouchAdj;//this.body.y+15;
+	this.backArm.joint2.x=6;//this.body.x+6;
+	this.backArm.joint2.y=0+this.body.crouchAdj;//this.body.y;
 	var ax=	this.backArm.joint1.x+Math.cos(Math.radians(this.backArm.angle))*this.backArm.length;
-	var ay=this.backArm.joint1.y+Math.sin(Math.radians(this.backArm.angle))*this.backArm.length;
+	var ay= this.backArm.joint1.y+Math.sin(Math.radians(this.backArm.angle))*this.backArm.length;
 	this.backArm.joint2.x=ax
 	this.backArm.joint2.y=ay;
  };
 arm.prototype.draw=function(can,cam)
 {
-	this.backArm.draw(can,cam);
+	this.backArm.drawNew(can,cam);
 	
 }
 
