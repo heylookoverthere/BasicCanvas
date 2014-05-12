@@ -4,6 +4,17 @@ var miles=new dude();
 miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 people.push(miles);
+for(var i=0;i<12;i++)
+{
+	var giles=new dude();
+	giles.x=Math.random()*1600;
+	giles.y=10;
+	giles.dancing=true;
+	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+	giles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+	giles.equip(helmetList[9]);
+	people.push(giles);
+}
 
 //camera.center(miles);
 camera.follow(miles);

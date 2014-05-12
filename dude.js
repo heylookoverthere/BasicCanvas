@@ -214,6 +214,10 @@ function dude()
 	this.flashFlag=false;
 	this.falshDuration=100;
 	this.flashAlpha=0.4;
+	this.dancing=false;
+	this.danceTrack=0;
+	this.danceRate=10;
+	this.danceFlag=false;
 	this.arms=[];
 	this.arms.push(new arm(this,0));
 	this.arms.push(new arm(this,1));
@@ -320,6 +324,27 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	if(this.flashFlag)
 	{
 		can.globalAlpha=this.flashAlpha;
+	}
+	if(this.dancing)
+	{
+		this.danceTrack++;
+		if(this.danceTrack>this.danceRate)
+		{
+			this.danceTrack=0;
+			this.danceFlag=!this.danceFlag;
+		}
+		if(this.danceFlag)
+		{
+			this.crouching=true;
+			this.arms[0].backArm.angle=90;
+			this.arms[1].backArm.angle=90;
+		}else
+		{
+			this.crouching=false;
+			this.arms[0].backArm.angle=195;
+			this.arms[1].backArm.angle=345;
+		}
+		
 	}
 	//can.translate((this.x+cam.tileX)*cam.zoom,(this.y+cam.tileY)*cam.zoom);
 	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
