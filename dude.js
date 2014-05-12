@@ -114,16 +114,40 @@ function bone(anchor)
 
 bone.prototype.draw=function(can,cam)
 {
-	can.save();
+	//can.save();
 	can.globalAlpha=1;
 	can.strokeStyle = "red";
 	can.beginPath();
 	can.lineWidth = 3;
 	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
-	can.moveTo(this.joint1.x-cam.x,this.joint1.y-cam.y);
+	can.moveTo(this.joint1.x-cam.tileX,this.joint1.y-cam.tileY);
 	if(true)//(this.joint2)
 	{
-		can.lineTo(this.joint2.x-cam.x,this.joint2.y-cam.y);
+		can.lineTo(this.joint2.x,this.joint2.y);
+	}else
+	{
+		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.length;
+		var ay=this.joint1.y+Math.sin(Math.radians(this.angle))*this.length;
+		canvas.lineTo(ax-cam.tileX,ay-cam.tileY);
+	}
+	
+	can.closePath();
+	can.stroke();
+	//can.restore();
+};
+
+bone.prototype.drawNEW=function(can,cam)
+{
+	//can.save();
+	can.globalAlpha=1;
+	can.strokeStyle = "red";
+	can.beginPath();
+	can.lineWidth = 3;
+	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
+	can.moveTo(this.joint1.x,this.joint1.y);
+	if(true)//(this.joint2)
+	{
+		can.lineTo(this.joint2.x,this.joint2.y);
 	}else
 	{
 		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.length;
@@ -133,7 +157,7 @@ bone.prototype.draw=function(can,cam)
 	
 	can.closePath();
 	can.stroke();
-	can.restore();
+	//can.restore();
 };
 
 function arm(that,side)
@@ -150,7 +174,7 @@ function arm(that,side)
 	{
 		this.backArm=new bone(thot);
 		this.backArm.side=1;
-		this.backArm.x+=24;
+		this.backArm.joint1.x+=24;
 		//this.backArm.angle=0;
 	}
 	//this.foreArm=new bone(that.backArm);
@@ -330,12 +354,12 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 	}
-
-	can.restore();
 	for(var i=0;i<this.arms.length;i++)
 	{
 		this.arms[i].draw(can,cam);
 	}
+	can.restore();
+
 };
 
 dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
