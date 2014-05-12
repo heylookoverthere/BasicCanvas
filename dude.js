@@ -93,56 +93,86 @@ function point()
 }
 function bone(anchor)
 {
-	this.x1=anchor.x;
-	this.y1=anchor.y;
+	this.body=anchor;
+	this.side=0;
+	this.joint1={};
+	this.joint2={};
+	this.joint1.x=anchor.x+3; //this doesn't matter because update.
+	this.joint1.y=anchor.y+6;
 	this.angle=90;
-	this.length=15;
-	
+	this.length=10;
+	this.joint2.x=anchor.x+60;
+	this.joint2.y=anchor.y+60;
 	/*will be calculated, based on angle and length.
 	this.x2=0;
 	this.y2=0;
 	*/
-	this.joint1=anchor;
-	this.joint2=null;
+	//this.joint1=anchor;
+	//this.joint2=null;
 	
 }
 
 bone.prototype.draw=function(can,cam)
 {
-	canvas.save();
-	canvas.strokeStyle = "red";
-	canvas.beginPath();
-	canvas.lineWidth = 2;
-
-	canvas.moveTo(this.x1,this.y1);
-	if(false)//(this.joint2)
+	can.save();
+	can.globalAlpha=1;
+	can.strokeStyle = "red";
+	can.beginPath();
+	can.lineWidth = 3;
+	//can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
+	can.moveTo(this.joint1.x-cam.x,this.joint1.y-cam.y);
+	if(true)//(this.joint2)
 	{
-		canvas.lineTo(joint2.x,joint2.y);
+		can.lineTo(this.joint2.x-cam.x,this.joint2.y-cam.y);
 	}else
 	{
-		var ax=	this.x1+Math.cos(Math.radians(this.angle))*this.length;
-		var ay=this.y1+Math.sin(Math.radians(this.angle))*this.length;
+		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.length;
+		var ay=this.joint1.y+Math.sin(Math.radians(this.angle))*this.length;
 		canvas.lineTo(ax,ay);
 	}
 	
-	canvas.closePath();
-	canvas.stroke();
-	canvas.restore();
+	can.closePath();
+	can.stroke();
+	can.restore();
 };
 
 function arm(that,side)
 {
-	this.backArm=new bone(that);
+	this.body=that;
+	var thot={};
+	thot.x=that.x+30;
+	thot.y=that.y;
+
 	if(side==0)
 	{
-	
+		this.backArm=new bone(that);
 	}else
 	{
-		
+		this.backArm=new bone(thot);
+		this.backArm.side=1;
+		this.backArm.x+=24;
+		//this.backArm.angle=0;
 	}
 	//this.foreArm=new bone(that.backArm);
 	
  }
+ arm.prototype.update=function()
+ {
+	if(this.backArm.side==0)
+	{
+		this.backArm.joint1.x=this.body.x+6;
+	}else
+	{
+		this.backArm.joint1.x=this.body.x+24;
+	}
+	this.backArm.joint1.y=this.body.y+15;
+	this.backArm.joint2.x=this.body.x+6;
+	this.backArm.joint2.y=this.body.y;
+	var ax=	this.backArm.joint1.x+Math.cos(Math.radians(this.backArm.angle))*this.backArm.length;
+	var ay=this.backArm.joint1.y+Math.sin(Math.radians(this.backArm.angle))*this.backArm.length;
+	this.backArm.joint2.x=ax
+	this.backArm.joint2.y=ay;
+ };
 arm.prototype.draw=function(can,cam)
 {
 	this.backArm.draw(can,cam);
@@ -300,9 +330,12 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 	}
-	this.arms[0].draw(can,cam);
-	this.arms[1].draw(can,cam);
+
 	can.restore();
+	for(var i=0;i<this.arms.length;i++)
+	{
+		this.arms[i].draw(can,cam);
+	}
 };
 
 dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
@@ -433,6 +466,10 @@ dude.prototype.bigJump=function()
 dude.prototype.update=function()
 {
 	if(!this.alive) {return;}
+	for(var i=0;i<this.arms.length;i++)
+	{
+		this.arms[i].update();
+	}
 	this.tailCount++;
 	if(true)//(this.tailCount>this.tailRate)
 	{
