@@ -806,11 +806,15 @@ function mainUpdate()
 	
 	var speeMulti=1;
 	
-	if(controller.buttons[3].checkDown())
+	if((controller.buttons[3].checkDown()) && (miles.onSurface()) && ((controller.checkLeft()) || (controller.checkRight())) )
 	{
-		speedMulti=3;
-		miles.speedFactor=2;
-		miles.showTail=true;
+		//speedMulti=3;
+		//miles.speedFactor=30;
+		miles.accelerate();
+		if(miles.speedFactor>15)
+		{
+			miles.showTail=true;
+		}
 		miles.tailLength=2;
 		if(miles.tail.length>2)
 		{
@@ -818,8 +822,9 @@ function mainUpdate()
 		}
 	}else
 	{
-		miles.speedFactor=1;
-		speedMulti=1;
+		//miles.speedFactor=10;
+		miles.deccelerate();
+		//speedMulti=1;
 		if(!miles.pounding)
 		{
 			miles.showTail=false;
@@ -834,7 +839,7 @@ function mainUpdate()
 		{
 			if(controller.checkUp())
 			{
-				miles.y-=miles.speed*speedMulti;
+				miles.y-=miles.speed*(miles.speedFactor/10);
 				//camera.y-=miles.speed*speedMulti;
 				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y<0) {miles.y=0;}
@@ -842,7 +847,7 @@ function mainUpdate()
 			}
 			if(controller.checkDown())
 			{
-				miles.y+=miles.speed*speedMulti;
+				miles.y+=miles.speed*(miles.speedFactor/10);
 				//camera.y+=miles.speed*speedMulti;
 				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y>curMap.height*tileSize-miles.height) {miles.y=(curMap.height-2)*tileSize}
@@ -850,7 +855,7 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
-				miles.x-=miles.speed*speedMulti;
+				miles.x-=miles.speed*(miles.speedFactor/10);
 				//camera.x-=miles.speed*speedMulti;
 				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x<0) {miles.x=0;}
@@ -858,7 +863,7 @@ function mainUpdate()
 			}
 			if(controller.checkRight())
 			{
-				miles.x+=miles.speed*speedMulti;
+				miles.x+=miles.speed*(miles.speedFactor/10);
 				//camera.x+=miles.speed*speedMulti;
 				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
@@ -906,11 +911,11 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
-				miles.xV-=0.2*miles.speedFactor;
+				miles.xV-=0.2*(miles.speedFactor/10);
 				mapDirty=true;
-				if(miles.xV<-miles.maxSpeed*miles.speedFactor)
+				if(miles.xV<-miles.maxSpeed*(miles.speedFactor/10))
 				{
-					miles.xV=-miles.maxSpeed*miles.speedFactor;
+					miles.xV=-miles.maxSpeed*(miles.speedFactor/10);
 				}
 				if(miles.x<0) {miles.x=0;}
 			}
@@ -918,9 +923,9 @@ function mainUpdate()
 			{
 				miles.xV+=0.2*miles.speedFactor;
 				mapDirty=true;
-				if(miles.xV>miles.maxSpeed*miles.speedFactor)
+				if(miles.xV>miles.maxSpeed*(miles.speedFactor/10))
 				{
-					miles.xV=miles.maxSpeed*miles.speedFactor;
+					miles.xV=miles.maxSpeed*(miles.speedFactor/10);
 				}
 				if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
 			}

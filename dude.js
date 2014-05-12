@@ -112,7 +112,7 @@ function bone(anchor)
 	
 }
 
-bone.prototype.draw=function(can,cam)
+/*bone.prototype.draw=function(can,cam)
 {
 	//can.save();
 	can.globalAlpha=1;
@@ -134,13 +134,13 @@ bone.prototype.draw=function(can,cam)
 	can.closePath();
 	can.stroke();
 	//can.restore();
-};
+};*/
 
 bone.prototype.drawNew=function(can,cam)
 {
 	//can.save();
-	can.globalAlpha=1;
-	can.strokeStyle = "white"; 
+	//can.globalAlpha=1;
+	can.strokeStyle = this.body.skinColor;//"white"; 
 	can.beginPath();
 	can.lineWidth = 3;
 	//can.translate(0,0);
@@ -185,13 +185,13 @@ function arm(that,side)
  {
 	if(this.backArm.side==0)
 	{
-		this.backArm.joint1.x=6;//this.body.x+6;
+		this.backArm.joint1.x=8;//this.body.x+6;
 	}else
 	{
 		this.backArm.joint1.x=24//this.body.x+24;
 	}
 	this.backArm.joint1.y=15+this.body.crouchAdj;//this.body.y+15;
-	this.backArm.joint2.x=6;//this.body.x+6;
+	this.backArm.joint2.x=8;//this.body.x+6;
 	this.backArm.joint2.y=0+this.body.crouchAdj;//this.body.y;
 	var ax=	this.backArm.joint1.x+Math.cos(Math.radians(this.backArm.angle))*this.backArm.length;
 	var ay= this.backArm.joint1.y+Math.sin(Math.radians(this.backArm.angle))*this.backArm.length;
@@ -255,6 +255,7 @@ function dude()
 	this.headBobBottom=-6;
 	this.bodyHeight=2;
 	this.bodyBobRoom=-2;
+	this.maxSpeedFactor=30;
 	this.headBob=false;
 	this.hp=100;
 	this.speed=2;
@@ -271,7 +272,7 @@ function dude()
 	this.breathRate=20;
 	this.breathTrack=0;
 	this.bobs=0;
-	this.speedFactor=1;
+	this.speedFactor=10;
 	this.friction=0.04;
 	this.breathing=false;
 	this.crouching=false;
@@ -348,6 +349,10 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 				this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 			}
 	}
+	for(var i=0;i<this.arms.length;i++)
+	{
+		this.arms[i].draw(can,cam);
+	}
 	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 
@@ -362,10 +367,7 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 	}
-	for(var i=0;i<this.arms.length;i++)
-	{
-		this.arms[i].draw(can,cam);
-	}
+
 	can.restore();
 
 };
@@ -397,6 +399,11 @@ dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
 					this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 				}
 		}
+
+		for(var ip=0;ip<this.arms.length;ip++)
+		{
+			this.arms[ip].draw(can,cam);
+		}
 		this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 		this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 
@@ -412,6 +419,7 @@ dude.prototype.drawTail=function(can,cam) //todo change to draw sprite.
 			this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 		}
 		can.restore();
+	
 	}
 
 };
@@ -420,6 +428,24 @@ dude.prototype.realDraw=function(can,cam)
 {
 	
 }
+
+dude.prototype.accelerate=function()
+{
+	this.speedFactor++;
+	if(this.speedFactor>this.maxSpeedFactor)
+	{
+		this.speedFactor=this.maxSpeedFactor;
+	}
+};
+
+dude.prototype.deccelerate=function()
+{
+	this.speedFactor--;
+	if(this.speedFactor<10)
+	{
+		this.speedFactor=10;
+	}
+};
 
 dude.prototype.headBobIterate=function()
 {
@@ -468,6 +494,7 @@ dude.prototype.bodyBobIterate=function()
 
 dude.prototype.pound=function()
 {
+	
 	if(this.pounding) {return;}
 	this.yV=+16;
 	this.pounding=true;
@@ -494,6 +521,13 @@ dude.prototype.bigJump=function()
 		this.falling=true;
 		this.jumpTrack++;
 	}
+};
+dude.prototype.onSurface=function()
+{
+	if(this.falling){
+		return false;
+	}
+	return true;
 };
 dude.prototype.update=function()
 {
