@@ -729,12 +729,14 @@ function mainUpdate()
 			if(controller.buttons[0].checkDown())
 			{
 				//miles.equip(noHelmet);
-				miles.arms[0].backArm.angle=195;
-				miles.arms[1].backArm.angle=345;
+				//miles.arms[0].backArm.angle=195;
+				//miles.arms[1].backArm.angle=345;
+				miles.wingsOut=true;
 			}else
 			{
-				miles.arms[0].backArm.angle=90;
-				miles.arms[1].backArm.angle=90;
+				//miles.arms[0].backArm.angle=90;
+				//miles.arms[1].backArm.angle=90;
+				miles.wingsOut=false;
 			}
 		}
 		if(controller.buttons[3].check())

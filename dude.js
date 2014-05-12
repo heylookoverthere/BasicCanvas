@@ -140,7 +140,7 @@ bone.prototype.drawNew=function(can,cam)
 {
 	//can.save();
 	can.globalAlpha=1;
-	can.strokeStyle = "red"; 
+	can.strokeStyle = "white"; 
 	can.beginPath();
 	can.lineWidth = 3;
 	//can.translate(0,0);
@@ -207,6 +207,8 @@ arm.prototype.draw=function(can,cam)
 function dude()
 {	
 	this.flashing=false;
+	this.wingsOut=false;
+	this.wingsOut=false;
 	this.flashMicroCounter=0;
 	this.flashMacroCounter=0;
 	this.flashSpeed=1;
@@ -325,27 +327,7 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		can.globalAlpha=this.flashAlpha;
 	}
-	if(this.dancing)
-	{
-		this.danceTrack++;
-		if(this.danceTrack>this.danceRate)
-		{
-			this.danceTrack=0;
-			this.danceFlag=!this.danceFlag;
-		}
-		if(this.danceFlag)
-		{
-			this.crouching=true;
-			this.arms[0].backArm.angle=90;
-			this.arms[1].backArm.angle=90;
-		}else
-		{
-			this.crouching=false;
-			this.arms[0].backArm.angle=195;
-			this.arms[1].backArm.angle=345;
-		}
-		
-	}
+
 	//can.translate((this.x+cam.tileX)*cam.zoom,(this.y+cam.tileY)*cam.zoom);
 	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
 	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
@@ -516,6 +498,38 @@ dude.prototype.bigJump=function()
 dude.prototype.update=function()
 {
 	if(!this.alive) {return;}
+	if(this.dancing)
+	{
+		this.danceTrack++;
+		if(this.danceTrack>this.danceRate)
+		{
+			this.danceTrack=0;
+			this.danceFlag=!this.danceFlag;
+		}
+		if(this.danceFlag)
+		{
+			this.crouching=true;
+			this.arms[0].backArm.angle=90;
+			this.arms[1].backArm.angle=90;
+		}else
+		{
+			this.crouching=false;
+			this.arms[0].backArm.angle=195;
+			this.arms[1].backArm.angle=345;
+		}
+		
+	}else
+	{
+		if(this.wingsOut)
+		{
+			this.arms[0].backArm.angle=195;
+			this.arms[1].backArm.angle=345;
+		}else
+		{
+			this.arms[0].backArm.angle=90;
+			this.arms[1].backArm.angle=90;
+		}
+	}
 	for(var i=0;i<this.arms.length;i++)
 	{
 		this.arms[i].update();
@@ -576,7 +590,13 @@ dude.prototype.update=function()
 	
 	if(platformer)
 	{
-		this.yV+=.3;
+		if(this.wingsOut)
+		{
+			this.yV+=.06;
+		}else
+		{
+			this.yV+=.3;
+		}
 	
 		this.x+=this.xV;
 		this.y+=this.yV;
