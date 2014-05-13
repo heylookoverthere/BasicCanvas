@@ -45,16 +45,18 @@ function gun(guy)
 gun.prototype.draw=function(can,cam)
 {
 	can.save();
-	if(this.guy.facingLeft)
+
+	//can.translate((this.guy.x-cam.tileX*16)*cam.zoom+16,(this.guy.y-cam.tileY*16)*cam.zoom+16);
+	//
+	can.translate((this.guy.x+this.guy.arms[1].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[1].backArm.joint2.y-cam.tileY*16)*cam.zoom);
+	can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
+	//can.scale(cam.zoom,cam.zoom);
+		if(this.guy.facingLeft)
 	{
 		//flip it.
-		//can.scale(-1, 1);
+		can.scale(1, -1);
 	}
-	can.translate((this.guy.x-cam.tileX*16)*cam.zoom+16,(this.guy.y-cam.tileY*16)*cam.zoom+16);
-	//
-	can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
-	can.scale(cam.zoom,cam.zoom);
-	this.sprite.draw(can, 12,12);
+	this.sprite.draw(can, -3,-3);
 	can.restore();
 
 }
