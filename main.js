@@ -118,16 +118,28 @@ function aPadButton(k,pad) {  //represents a keyboard button
     this.key =k;
     this.aflag=false;
     this.dflag=false;
+	this.pressedTime=0;
 	this.parentPad=pad;
 	this.desc="A small brown mushroom.";
     this.check= function(){
-        if (this.parentPad.buttons[this.key]) { 
+        if ((this.parentPad.buttons[this.key]) && (!this.aflag)){ 
             this.aflag=true;
+			timestamp = new Date();
+			this.pressedTime=timestamp.getTime();
             return false;
         }
         if((!this.parentPad.buttons[this.key]) && (this.aflag===true)){
             this.aflag=false;
-            return true;
+			timestamp = new Date();
+			var nurp=timestamp.getTime();
+			if(nurp-this.pressedTime<1000)
+			{	
+				//console.log(nurp-this.pressedTime);
+				return true;
+			}else
+			{
+				return false;
+			}
         }
 		
     };
@@ -767,7 +779,10 @@ function mainUpdate()
 		{
 			if(miles.jumpTrack>0)
 			{
-				miles.pound();
+				if(true)//(miles.dongle)
+				{
+					miles.pound();
+				}
 			}
 		}
 		if(controller.buttons[5].check())
@@ -830,31 +845,43 @@ function mainUpdate()
 	
 	var speeMulti=1;
 	
-	if((controller.buttons[3].checkDown()) && (miles.onSurface()) && ((controller.checkLeft()) || (controller.checkRight())) )
+	if(controller.buttons[3].checkDown()) 
 	{
-		//speedMulti=3;
-		//miles.speedFactor=30;
-		miles.accelerate();
-		if(miles.speedFactor>15)
+		//miles.dongle=false;
+		if((miles.onSurface()) && ((controller.checkLeft()) || (controller.checkRight())) )
 		{
-			miles.showTail=true;
-		}
-		miles.tailLength=2;
-		if(miles.tail.length>2)
+			//speedMulti=3;
+			//miles.speedFactor=30;
+			
+			//controller.buttons[3].aflag=false;
+			miles.accelerate();
+			if(miles.speedFactor>15)
+			{
+				miles.showTail=true;
+			}
+			miles.tailLength=2;
+			if(miles.tail.length>2)
+			{
+				miles.tail.splice(0,miles.tail.length-2);
+			}
+		}else
 		{
-			miles.tail.splice(0,miles.tail.length-2);
+			//miles.speedFactor=10;
+			
+			miles.deccelerate();
+			//speedMulti=1;
+			if(!miles.pounding)
+			{
+				miles.showTail=false;
+			}
+			miles.tailLength=5;
 		}
-	}else
-	{
-		//miles.speedFactor=10;
-		miles.deccelerate();
-		//speedMulti=1;
-		if(!miles.pounding)
-		{
-			miles.showTail=false;
-		}
-		miles.tailLength=5;
 	}
+	else
+	{
+		//miles.dongle=true;
+	}
+	
 	
 	
 	if(true)

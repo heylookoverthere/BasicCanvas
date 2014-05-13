@@ -262,6 +262,7 @@ function dude(otherdude)
 {	
 	if(!otherdude)
 	{
+	this.dongle=true;
 	this.flashing=false;
 	this.wingsOut=false;
 	this.wingsOut=false;
