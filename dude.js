@@ -332,6 +332,8 @@ function dude(otherdude)
 	this.inBox=false;
 	this.dongle=true;
 	this.gunTrack=0;
+	this.lastBackDash=0;
+	this.backDashCoolDown=800;
 	this.guns=[];
 	this.guns.push(new gun(this,0));
 	this.guns.push(new gun(this,1));
@@ -556,6 +558,24 @@ dude.prototype.hurt=function(damage)
 	}
 		
 }
+
+dude.prototype.backDash=function()
+{
+	var atimestamp = new Date();
+	var neow=atimestamp.getTime();
+	if(neow-this.lastBackDash>this.backDashCoolDown)
+	{
+		if(this.facingLeft)
+		{
+			this.xV+=7;
+		}else
+		{
+			this.xV-=7;
+		}
+		
+		this.lastBackDash=atimestamp.getTime();
+	}
+};
 
 dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 {

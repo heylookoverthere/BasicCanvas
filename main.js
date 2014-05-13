@@ -224,7 +224,7 @@ virtualGamePad.prototype.switchToKeyboard=function()
 	this.buttons[6].desc="Toggle platformer mode";
 	this.buttons.push(new akey("return"));
 	this.buttons[7].desc="Respawn";
-	console.log("controller no longer detected, switching to keyboard controlls");
+	console.log("controller no longer detected, switching to keyboard controls");
 };
 
 virtualGamePad.prototype.switchToController=function()
@@ -245,7 +245,7 @@ virtualGamePad.prototype.switchToController=function()
 		}
 	}
 	
-	console.log("controller detected, disabling keyboard controlls.");
+	console.log("controller detected, disabling keyboard controls.");
 };
 
 virtualGamePad.prototype.checkLeft=function()
@@ -751,7 +751,7 @@ function mainUpdate()
 			{
 				miles.crouching=false;
 			}*/
-			if(controller.buttons[0].checkDown())
+			if(controller.buttons[0].checkDown())//A
 			{
 				//miles.equip(noHelmet);
 				miles.arms[0].backArm.angle=195;
@@ -781,7 +781,7 @@ function mainUpdate()
 				}
 			}
 		}
-		if(controller.buttons[3].check())
+		if(controller.buttons[3].check())//Y
 		{
 			if(miles.jumpTrack>0)
 			{
@@ -791,7 +791,7 @@ function mainUpdate()
 				}
 			}
 		}
-		if(controller.buttons[5].checkDown())
+		if(controller.buttons[5].checkDown())//R
 		{
 			//miles.expression=Math.floor(Math.random()*numfaces);
 			miles.aiming=true;
@@ -799,10 +799,9 @@ function mainUpdate()
 		{
 			miles.aiming=false;
 		}
-		if(controller.buttons[4].check())
+		if(controller.buttons[4].check()) //X
 		{
-			miles.hairSprites[0]=Sprite("hair"+Math.floor(Math.random()*numhair));
-			mapDirty=true;
+			miles.backDash();
 			
 		}
 	}
@@ -955,17 +954,29 @@ function mainUpdate()
 			{
 				miles.crouching=true;
 				mapDirty=true;
+				if(miles.aiming)
+				{
+					if(miles.facingLeft)
+					{
+						miles.arms[0].backArm.angle=90;
+					}else
+					{
+						miles.arms[1].backArm.angle=90;
+					}
+					miles.aimingDown=true;
+				}
 			}else
 			{
 				miles.crouching=false;
+				miles.aimingDown=false;
 			}
 			if(controller.checkLeft())
 			{
-				
+				miles.facingLeft=true;
 				if(!miles.aiming)
 				{
-					miles.facingLeft=true;
-				}
+					
+				//}
 					if(!miles.lastLeft)
 					{
 						this.xV=0;
@@ -985,15 +996,15 @@ function mainUpdate()
 						miles.xV=0;
 					}
 					miles.lastLeft=true;
-			//	}
+				}
 			}
 			if(controller.checkRight())
 			{	
-				
+				miles.facingLeft=false;
 				if(!miles.aiming)
 				{
-					miles.facingLeft=false;
-				}
+					
+				//}
 					if(miles.lastLeft)
 					{
 						this.xV=0;
@@ -1013,7 +1024,7 @@ function mainUpdate()
 						miles.xV=0;
 					}
 					miles.lastLeft=false;
-				//}
+				}
 			}
 		}
 	}
