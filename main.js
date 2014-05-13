@@ -2,6 +2,7 @@ var debugInfo=false;
 var people=[];
 var miles=new dude();
 miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 miles.gun=miles.guns[0];
 people.push(miles);
 for(var i=0;i<12;i++)
@@ -9,7 +10,7 @@ for(var i=0;i<12;i++)
 	var giles=new dude();
 	giles.x=Math.random()*219*16;
 	giles.y=10;
-	giles.dancing=true;
+	giles.gesturing=true;
 	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 	giles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 	giles.equip(helmetList[9]);
@@ -928,8 +929,11 @@ function mainUpdate()
 
 			if(controller.checkUp())
 			{
+				miles.gesturing=false;
 				if(miles.aiming)
 				{
+					if(otherControls)
+					{
 					if(miles.facingLeft)
 					{
 						miles.arms[0].backArm.angle=270;
@@ -938,32 +942,37 @@ function mainUpdate()
 						miles.arms[1].backArm.angle=270;
 					}
 					miles.aimingUp=true;
+					}else
+					{
+						miles.gun.angleOffset+=aimSpeed;
+					}
 				}
 				//what does up do?
 			}else
 			{
-				if(miles.aiming)
-				{
-					//miles.arms[0].relax();
-					//miles.arms[1].relax();
-					
-				}
 				miles.aimingUp=false;
 			}
 			if(controller.checkDown())
 			{
 				miles.crouching=true;
+				miles.gesturing=false;
 				mapDirty=true;
 				if(miles.aiming)
 				{
-					if(miles.facingLeft)
+					if(otherControls)
 					{
-						miles.arms[0].backArm.angle=90;
+						if(miles.facingLeft)
+						{
+							miles.arms[0].backArm.angle=90;
+						}else
+						{
+							miles.arms[1].backArm.angle=90;
+						}
+						miles.aimingDown=true;
 					}else
 					{
-						miles.arms[1].backArm.angle=90;
+						miles.gun.angleOffset-=aimSpeed;
 					}
-					miles.aimingDown=true;
 				}
 			}else
 			{
@@ -972,11 +981,10 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
+				miles.gesturing=false;
 				miles.facingLeft=true;
 				if(!miles.aiming)
 				{
-					
-				//}
 					if(!miles.lastLeft)
 					{
 						this.xV=0;
@@ -1001,10 +1009,10 @@ function mainUpdate()
 			if(controller.checkRight())
 			{	
 				miles.facingLeft=false;
+				miles.gesturing=false;
 				if(!miles.aiming)
 				{
 					
-				//}
 					if(miles.lastLeft)
 					{
 						this.xV=0;

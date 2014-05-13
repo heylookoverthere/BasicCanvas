@@ -12,6 +12,11 @@ BonusTypes.SpeedUp=3;
 BonusTypes.Regen=4;
 BonusTypes.MagicUp=5;
 
+GestureTypes={};
+GestureTypes.Surrender=0;
+GestureTypes.Wave=1;
+GestureTypes.Dance=2;
+
 var sleeveColorList=[];
 sleeveColorList.push("4800FF");
 sleeveColorList.push("007F0E");
@@ -23,7 +28,8 @@ sleeveColorList.push("white");
 sleeveColorList.push("DAFF7F");
 sleeveColorList.push("white");//("007F0E");
 
-
+var otherControls=true;
+var aimSpeed=9;
 var platformer=true;
 var friction=0.07;
 
@@ -39,6 +45,7 @@ function gun(guy,type)
 	this.reloadSpeed=1;
 	this.shotSpeed=4;
 	this.aimAdjHead=0;
+	this.angleOffset=0;
 	if(type==0)
 	{	
 		this.sprite=Sprite("gun0");
@@ -49,6 +56,7 @@ function gun(guy,type)
 	{
 		this.sprite=Sprite("gun1");
 		this.bothArms=true;
+		this.angleOffset=15;
 		this.xOffset=-18;
 		this.yOffset=-6;
 	}else
@@ -327,6 +335,7 @@ function dude(otherdude)
 	{
 	this.aiming=false;
 	this.aimingUp=false;
+	
 	this.aimingDown=false;
 	this.aimAngle=90;
 	this.inBox=false;
@@ -334,6 +343,8 @@ function dude(otherdude)
 	this.gunTrack=0;
 	this.lastBackDash=0;
 	this.backDashCoolDown=800;
+	this.gesturing=false;
+	this.gesture=GestureTypes.Wave;
 	this.guns=[];
 	this.guns.push(new gun(this,0));
 	this.guns.push(new gun(this,1));
@@ -349,9 +360,11 @@ function dude(otherdude)
 	this.flashFlag=false;
 	this.falshDuration=100;
 	this.flashAlpha=0.4;
-	this.dancing=false;
-	this.danceTrack=0;
-	this.danceRate=5+Math.random()*10;//10;
+	this.gesturing=false;
+	this.gestureTrack=0;
+	this.gestureStart=0;
+	this.gestureDuration=1000;
+	this.gestureRate=5+Math.random()*10;//10;
 	if(Math.random()*10<5)
 	{
 		this.danceFlag=false;
@@ -453,9 +466,9 @@ function dude(otherdude)
 		this.flashFlag=otherdude.;
 		this.falshDuration=otherdude.;
 		this.flashAlpha=otherdude.;
-		this.dancing=otherdude.;
-		this.danceTrack=otherdude.;
-		this.danceRate=otherdude.;
+		this.gesturing=otherdude.;
+		this.gestureTrack=otherdude.;
+		this.gestureRate=otherdude.;
 		this.danceFlag=otherdude.;
 		this.arms=otherdude.
 		this.alive=otherdude.
@@ -812,6 +825,15 @@ dude.prototype.shoot=function()
 	monsta.shootTextured(this.gun.x,this.gun.y,90,.5,"explosion0");
 };
 
+dude.prototype.doGesture=function(type,dur)
+{
+	this.gesturing=true;
+	this.gesture=type;
+	this.gestureDuration=dur;
+	var atimestamp = new Date();
+	this.gestureStart=atimestamp.getTime();
+};
+
 dude.prototype.update=function()
 {
 	if(!this.alive) {return;}
@@ -825,22 +847,27 @@ dude.prototype.update=function()
 		
 		}else
 		{
+			var mup=0;
+			if(this.gun)
+			{
+				mup=this.gun.angleOffset;
+			}
 			if(this.facingLeft)
 			{
-
-				this.arms[0].backArm.angle=180;
+				
+				this.arms[0].backArm.angle=180+mup;
 				this.arms[1].backArm.angle=100;
 				if(this.gun.bothArms)
 				{
-					this.arms[1].backArm.angle=180;
+					this.arms[1].backArm.angle=180+mup;
 				}
 			}else
 			{
-				this.arms[1].backArm.angle=360;
+				this.arms[1].backArm.angle=0-mup;
 				this.arms[0].backArm.angle=100;
 				if(this.gun.bothArms)
 				{
-					this.arms[0].backArm.angle=360;
+					this.arms[0].backArm.angle=0-mup;
 				}
 			}
 		}
@@ -849,26 +876,75 @@ dude.prototype.update=function()
 		this.arms[0].relax();
 		this.arms[1].relax();
 	}
-	if(this.dancing)
+	if(this.gesturing)
 	{
-		this.danceTrack++;
-		if(this.danceTrack>this.danceRate)
+		var atimestamp = new Date();
+		var neow=atimestamp.getTime();
+		if(neow-this.gestureStart<this.gestureDuration)
 		{
-			this.danceTrack=0;
-			this.danceFlag=!this.danceFlag;
-		}
-		if(this.danceFlag)
-		{
-			this.crouching=true;
-			this.arms[0].relax();
-			this.arms[1].relax();
+			if(this.gesture===GestureTypes.Dance)
+			{
+				this.gestureTrack++;
+				if(this.gestureTrack>this.gestureRate)
+				{
+					this.gestureTrack=0;
+					this.danceFlag=!this.danceFlag;
+				}
+				if(this.danceFlag)
+				{
+					this.crouching=true;
+					this.arms[0].relax();
+					this.arms[1].relax();
+				}else
+				{
+					this.crouching=false;
+					this.arms[0].backArm.angle=195;
+					this.arms[1].backArm.angle=345;
+				}
+			}else if(this.gesture==GestureTypes.Wave)
+			{
+				this.gestureTrack++;
+				if(this.gestureTrack>30)//this.gestureRate)
+				{
+					this.gestureTrack=0;
+					this.danceFlag=!this.danceFlag;
+				}
+				if(this.danceFlag)
+				{
+					this.arms[0].backArm.angle+=90+this.gestureTrack*4;
+				
+				}else
+				{
+					this.arms[0].backArm.angle-=90+this.gestureTrack*4;
+				}
+			
+			}else if(this.gesture==GestureTypes.Surrender)
+			{
+				this.arms[0].backArm.angle=270;
+				this.arms[1].backArm.angle=270;
+			
+			}else if(this.gesture==GestureTypes.Waft)
+			{
+				this.gestureTrack++;
+				if(this.gestureTrack>this.gestureRate)
+				{
+					this.gestureTrack=0;
+					this.danceFlag=!this.danceFlag;
+				}
+				if(this.danceFlag)
+				{
+					this.arms[0].backArm.angle+=50+this.gestureTrack*4;
+				
+				}else
+				{
+					this.arms[0].backArm.angle-=50+this.gestureTrack*4;
+				}
+			
+			}
 		}else
 		{
-			this.crouching=false;
-			this.arms[0].backArm.angle=195;
-			this.arms[1].backArm.angle=345;
+			this.gesturing=false;
 		}
-		
 	}else if(!this.aiming)
 	{
 		if(this.wingsOut)
