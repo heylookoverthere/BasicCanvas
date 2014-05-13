@@ -774,17 +774,21 @@ dude.prototype.update=function()
 	if(platformer)
 	{
 
-	
-		this.x+=this.xV;
-		this.y+=this.yV;
 		
-		if(curMap.canStand(Math.floor(this.x/tileSize),Math.floor(this.y/tileSize)+2))
+		var proposedX=this.x+=this.xV;
+		var proposedY=this.y+=this.yV;
+		if(curMap.walkable(Math.floor(proposedX/16),Math.floor(proposedY/16)))
+		{
+			this.x=proposedX;
+			this.y=proposedY;
+		}
+		if((curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)) || (curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)))//problem, getting stuck in ground.
 		{
 			this.falling=false;
 			this.pounding=false;
 			this.jumpTrack=0;
 			this.yV=-this.yV*this.elasticity;
-			if(Math.abs(this.yV)<0.5)
+			if(Math.abs(this.yV)<0.05)
 			{
 				this.yV=0;
 			}

@@ -845,10 +845,8 @@ function mainUpdate()
 	
 	var speeMulti=1;
 	
-	if(controller.buttons[3].checkDown()) 
-	{
 		//miles.dongle=false;
-		if((miles.onSurface()) && ((controller.checkLeft()) || (controller.checkRight())) )
+		if((controller.buttons[3].checkDown()) &&(miles.onSurface()) && ((controller.checkLeft()) || (controller.checkRight())) )
 		{
 			//speedMulti=3;
 			//miles.speedFactor=30;
@@ -876,11 +874,6 @@ function mainUpdate()
 			}
 			miles.tailLength=5;
 		}
-	}
-	else
-	{
-		//miles.dongle=true;
-	}
 	
 	
 	
@@ -962,7 +955,11 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
-				if((curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize)-1,Math.floor(miles.y/tileSize)+1)))
+				if(!miles.lastLeft)
+				{
+					this.xV=0;
+				}
+				if((curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize)+1)))
 				{
 					miles.xV-=0.2*(miles.speedFactor/10);
 					mapDirty=true;
@@ -975,9 +972,14 @@ function mainUpdate()
 				{
 					miles.xV=0;
 				}
+				miles.lastLeft=true;
 			}
 			if(controller.checkRight())
-			{
+			{	
+				if(miles.lastLeft)
+				{
+					this.xV=0;
+				}
 				if((curMap.walkable(Math.floor(miles.x/tileSize)+1,Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize)+2,Math.floor(miles.y/tileSize)+1)))
 				{
 					miles.xV+=0.2*miles.speedFactor;
@@ -991,6 +993,7 @@ function mainUpdate()
 				{
 					miles.xV=0;
 				}
+				miles.lastLeft=false;
 			}
 		}
 	}
