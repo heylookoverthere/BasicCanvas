@@ -673,7 +673,7 @@ dude.prototype.bigJump=function()
 dude.prototype.onSurface=function()
 {
 	if(this.falling){
-		return false;
+		return true;//false;
 	}
 	return true;
 };
@@ -772,16 +772,33 @@ dude.prototype.update=function()
 	
 	if(platformer)
 	{
-		if(this.wingsOut)
-		{
-			this.yV+=.06;
-		}else
-		{
-			this.yV+=.3;
-		}
+
 	
 		this.x+=this.xV;
 		this.y+=this.yV;
+		
+		if(curMap.canStand(Math.floor(this.x/tileSize),Math.floor(this.y/tileSize)+2))
+		{
+			this.falling=false;
+			this.pounding=false;
+			this.jumpTrack=0;
+			this.yV=-this.yV*this.elasticity;
+			if(Math.abs(this.yV)<0.5)
+			{
+				this.yV=0;
+			}
+			this.showTail=false;
+		}else
+		{
+			if(this.wingsOut)
+			{
+				this.yV+=.06;
+			}else
+			{
+				this.yV+=.3;
+			}
+		}
+		
 		if(this.y>curMap.height*16-33)
 		{
 			this.y=curMap.height*16-33;

@@ -308,13 +308,23 @@ function Map(I) { //map object
         return astar.search(graph.nodes, graph.nodes[startX][startY], graph.nodes[endX][endY]);
     };
 	
-	I.walkable=function(x,y,sqd){
-		if(sqd.getFlightHeight()>1) {return true;}
-		if((sqd.getFlightHeight()>0) && (I.tiles[x][y].data!=TileType.Mountains)){return true;}
-		if((sqd.canSwim()) && (curMap.tiles[x][y].data==TileType.Water)) {return true;}
-		if((I.tiles[x][y].data!=TileType.Mountains) &&(I.tiles[x][y].data!=TileType.Ocean) &&(I.tiles[x][y].data!=TileType.Lava)) {return true;}
+	I.walkable=function(x,y){
+		if((I.tiles[x][y].data!=TileType.Mountains)){return true;}// &&(I.tiles[x][y].data!=TileType.Ocean) &&(I.tiles[x][y].data!=TileType.Lava)) {return true;}
 		return false;
 	}
+	
+	 I.canStand = function (x,y) { //sidemode only
+		/*if( !I.walls[x] || !I.walls[x][y] ) {
+			  return true;
+			}
+		if (I.walls[x][y].data >44)   {
+			return true;*/
+		if (I.tiles[x][y].data ==TileType.Mountains)   {
+			return true;
+		}else if (false){//(I.tiles[x][y].platform){
+			return true;
+		}else {return false;}
+    };
 	
 	I.stringifyTiles = function(name) {
 		var tempstring= "";

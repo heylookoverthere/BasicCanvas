@@ -625,6 +625,25 @@ function worldMapUpdate(){
 
 };
 
+function dingle(x,y)
+{
+	canvas.save()
+	canvas.globalAlpha=0.4;
+	
+	if(curMap.walkable(Math.floor(miles.tileX)+x,Math.floor(miles.tileY)+y))
+	{
+		canvas.fillStyle="white";
+	}else
+	{
+		canvas.fillStyle="red";
+	}
+
+	canvas.translate(((miles.tileX+x)*16-camera.tileX*16)*camera.zoom,((miles.tileY+y)*16-camera.tileY*16)*camera.zoom);
+	canvas.fillRect(0,0,16,16);
+	canvas.restore();
+
+}
+
 //------------MAIN DRAW-----------------------------------------
 function mainDraw() {
 	curMap.draw(camera);
@@ -639,6 +658,13 @@ function mainDraw() {
 		people[i].draw(canvas,camera);
 	}
 	monsta.draw(canvas,camera);
+
+	/*dingle(0,1);
+	dingle(0,0);
+	dingle(1,0);
+	dingle(1,1);*/
+	
+	//canvas.fillRect(miles.tileX+camera.x,miles.tileY+camera.y,16,16);
 	
 	canvas.globalAlpha=0.4;
 	curMap.drawRadar(camera,665,350);
@@ -909,23 +935,35 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
-				miles.xV-=0.2*(miles.speedFactor/10);
-				mapDirty=true;
-				if(miles.xV<-miles.maxSpeed*(miles.speedFactor/10))
+				if((curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize)-1,Math.floor(miles.y/tileSize)+1)))
 				{
-					miles.xV=-miles.maxSpeed*(miles.speedFactor/10);
+					miles.xV-=0.2*(miles.speedFactor/10);
+					mapDirty=true;
+					if(miles.xV<-miles.maxSpeed*(miles.speedFactor/10))
+					{
+						miles.xV=-miles.maxSpeed*(miles.speedFactor/10);
+					}
+					if(miles.x<0) {miles.x=0;}
+				}else
+				{
+					miles.xV=0;
 				}
-				if(miles.x<0) {miles.x=0;}
 			}
 			if(controller.checkRight())
 			{
-				miles.xV+=0.2*miles.speedFactor;
-				mapDirty=true;
-				if(miles.xV>miles.maxSpeed*(miles.speedFactor/10))
+				if((curMap.walkable(Math.floor(miles.x/tileSize)+1,Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize)+2,Math.floor(miles.y/tileSize)+1)))
 				{
-					miles.xV=miles.maxSpeed*(miles.speedFactor/10);
+					miles.xV+=0.2*miles.speedFactor;
+					mapDirty=true;
+					if(miles.xV>miles.maxSpeed*(miles.speedFactor/10))
+					{
+						miles.xV=miles.maxSpeed*(miles.speedFactor/10);
+					}
+					if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
+				}else
+				{
+					miles.xV=0;
 				}
-				if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
 			}
 		}
 	}
