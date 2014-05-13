@@ -959,6 +959,7 @@ function mainUpdate()
 				{
 					this.xV=0;
 				}
+				miles.facingLeft=true;
 				if((curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize),Math.floor(miles.y/tileSize)+1)))
 				{
 					miles.xV-=0.2*(miles.speedFactor/10);
@@ -980,6 +981,7 @@ function mainUpdate()
 				{
 					this.xV=0;
 				}
+				miles.facingLeft=false;
 				if((curMap.walkable(Math.floor(miles.x/tileSize)+1,Math.floor(miles.y/tileSize))) && (curMap.walkable(Math.floor(miles.x/tileSize)+2,Math.floor(miles.y/tileSize)+1)))
 				{
 					miles.xV+=0.2*miles.speedFactor;

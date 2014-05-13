@@ -27,6 +27,38 @@ sleeveColorList.push("white");//("007F0E");
 var platformer=false;
 var friction=0.07;
 
+function gun(guy)
+{
+	this.guy=guy;
+	this.name="Checkov's Gun";
+	this.damage=5;
+	this.recoil=2;
+	this.kockback=1;
+	this.clipSize=10;
+	this.shotsPer=1;
+	this.reloadSpeed=1;
+	this.shotSpeed=4;
+	this.sprite=Sprite("gun0");
+
+}
+
+gun.prototype.draw=function(can,cam)
+{
+	can.save();
+	if(this.guy.facingLeft)
+	{
+		//flip it.
+		//can.scale(-1, 1);
+	}
+	can.translate((this.guy.x-cam.tileX*16)*cam.zoom+16,(this.guy.y-cam.tileY*16)*cam.zoom+16);
+	//
+	can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
+	can.scale(cam.zoom,cam.zoom);
+	this.sprite.draw(can, 12,12);
+	can.restore();
+
+}
+
 function armor(sprtext,sloot,id)
 {
 	this.defense=0;
@@ -263,6 +295,7 @@ function dude(otherdude)
 	if(!otherdude)
 	{
 	this.dongle=true;
+	this.gun=new gun(this);
 	this.flashing=false;
 	this.wingsOut=false;
 	this.wingsOut=false;
@@ -295,6 +328,7 @@ function dude(otherdude)
 	this.sleeveColor="#404040"
 	this.x=120*tileSize;//this seems to be straight X, camera uses tile X
 	this.y=170*tileSize;
+	this.facingLeft=false;
 	this.tileX=Math.floor(this.x/tileSize);
 	this.tileY=Math.floor(this.y/tileSize);
 	this.xV=0;
@@ -516,8 +550,13 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
 	}
-
 	can.restore();
+	if(this.gun)
+	{
+		this.gun.draw(can,cam);
+	}
+	
+	
 
 };
 
