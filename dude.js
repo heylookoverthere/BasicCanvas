@@ -12,18 +12,41 @@ BonusTypes.SpeedUp=3;
 BonusTypes.Regen=4;
 BonusTypes.MagicUp=5;
 
+var sleeveColorList=[];
+sleeveColorList.push("4800FF");
+sleeveColorList.push("007F0E");
+sleeveColorList.push("0094FF");
+sleeveColorList.push("00FF21");
+sleeveColorList.push("267F00");
+sleeveColorList.push("D980FF");
+sleeveColorList.push("white");
+sleeveColorList.push("DAFF7F");
+sleeveColorList.push("white");//("007F0E");
+
+
 var platformer=false;
 var friction=0.07;
 
-function armor(sprtext,sloot)
+function armor(sprtext,sloot,id)
 {
 	this.defense=0;
+	if(!id) {id=0;}
+	this.id=id;
 	this.visible=false;
 	this.real=false;
 	this.slot=0;
 	this.bonuses=[];
 	this.bonusVal=[];
-	
+	if(sloot==EquipSlots.Chest)
+	{
+		this.sleeves=true;
+		if(id==6)
+		{
+			this.sleeves=false;
+		}
+		this.sleeveColor=sleeveColorList[this.id];
+		this.sleeveLength=5;
+	}
 	if(sloot)
 	{
 		this.slot=sloot;
@@ -71,7 +94,7 @@ var numfaces=4;
 var numhair=9;
 for(var i=0;i<numshirts;i++)
 {
-	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest));
+	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest,i));
 }
 
 
@@ -135,11 +158,9 @@ function bone(anchor)
 	can.stroke();
 	//can.restore();
 };*/
-
 bone.prototype.drawNew=function(can,cam)
 {
 	//can.save();
-	//can.globalAlpha=1;
 	can.strokeStyle = this.body.skinColor;//"white"; 
 	can.beginPath();
 	can.lineWidth = 3;
@@ -158,7 +179,29 @@ bone.prototype.drawNew=function(can,cam)
 	
 	can.closePath();
 	can.stroke();
-	//can.restore();
+	
+};
+
+bone.prototype.drawSleeve=function(can,cam,wang)
+{
+
+	if((this.body) && (this.body.equipment)&&(this.body.equipment[1].sleeves) )
+	{
+		can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
+		can.strokeStyle = this.body.equipment[EquipSlots.Chest].sleeveColor;//"white"; 
+		can.beginPath();
+		can.lineWidth = 4;
+		can.moveTo(this.joint1.x,this.joint1.y);
+		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.body.equipment[1].sleeveLength;
+		var ay= this.joint1.y+Math.sin(Math.radians(this.angle))*this.body.equipment[1].sleeveLength;
+		//can.lineTo(this.joint2.x,this.joint2.y);
+		can.lineTo(ax,ay);
+		can.closePath();
+		can.stroke();
+		//can.restore();
+	}
+
+		
 };
 
 function arm(that,side)
@@ -167,13 +210,18 @@ function arm(that,side)
 	var thot={};
 	thot.x=that.x+30;
 	thot.y=that.y;
+	thot.equipment=[]
+	for(var i=0;i<that.equipment.length;i++)
+	{
+		thot.equipment.push(that.equipment[i]);
+	}
 
 	if(side==0)
 	{
 		this.backArm=new bone(that);
 	}else
 	{
-		this.backArm=new bone(thot);
+		this.backArm=new bone(that);
 		this.backArm.side=1;
 		this.backArm.joint1.x+=24;
 		//this.backArm.angle=0;
@@ -204,8 +252,16 @@ arm.prototype.draw=function(can,cam)
 	
 }
 
-function dude()
+arm.prototype.drawSleeves=function(can,cam,wang)
+{
+	this.backArm.drawSleeve(can,cam,wang);
+	
+}
+
+function dude(otherdude)
 {	
+	if(!otherdude)
+	{
 	this.flashing=false;
 	this.wingsOut=false;
 	this.wingsOut=false;
@@ -218,11 +274,15 @@ function dude()
 	this.flashAlpha=0.4;
 	this.dancing=false;
 	this.danceTrack=0;
-	this.danceRate=10;
-	this.danceFlag=false;
-	this.arms=[];
-	this.arms.push(new arm(this,0));
-	this.arms.push(new arm(this,1));
+	this.danceRate=5+Math.random()*10;//10;
+	if(Math.random()*10<5)
+	{
+		this.danceFlag=false;
+	}else
+	{
+		this.danceFlag=true;
+	}
+
 	this.alive=true;
 	this.race=1;
 	this.skinColor="#FFBC59";
@@ -301,6 +361,86 @@ function dude()
 	this.equipment[EquipSlots.Chest]=noChest;
 	this.equipment[EquipSlots.Helmet]=noHelmet;
 	this.equipment[EquipSlots.Ring]=noRing;
+	this.arms=[];
+	this.arms.push(new arm(this,0));
+	this.arms.push(new arm(this,1));
+	}else
+	{
+		/*this.flashing=otherdude.flashing;
+		this.wingsOut=otherdude.wingsOut
+		this.flashMicroCounter=0;
+		this.flashMacroCounter=0;
+		this.flashSpeed=otherdude.flashSpeed;
+		this.flashRate=otherdude.;
+		this.flashFlag=otherdude.;
+		this.falshDuration=otherdude.;
+		this.flashAlpha=otherdude.;
+		this.dancing=otherdude.;
+		this.danceTrack=otherdude.;
+		this.danceRate=otherdude.;
+		this.danceFlag=otherdude.;
+		this.arms=otherdude.
+		this.alive=otherdude.
+		this.race=otherdude.
+		this.skinColor=otherdude.
+		this.x=otherdude.
+		this.y=otherdude.
+		this.tileX=otherdude.
+		this.tileY=otherdude.
+		this.xV=otherdude.;
+		this.yV=otherdude.;
+		this.elasticity=otherdude.;
+		this.maxSpeed=otherdude.;
+		this.numJumps=otherdude.;
+		this.falling=otherdude.;
+		this.jumpTrack=otherdude.;
+		this.tail=otherdude.;
+		this.tailRate=otherdude.;
+		this.tailLength=otherdude.;
+		this.showTail=otherdude.;
+		this.tailCount=otherdude.;
+		this.tileX=otherdude.;
+		this.tileY=otherdude.
+		this.headHeight=otherdude.;
+		this.headBobTop=otherdude.;
+		this.headBobBottom=otherdude.;
+		this.bodyHeight=otherdude.;
+		this.bodyBobRoom=otherdude.;
+		this.maxSpeedFactor=otherdude.;
+		this.headBob=otherdude.;
+		this.hp=otherdude.;
+		this.speed=otherdude.;
+		this.width=otherdude.;
+		this.height=otherdude.;
+		this.expression=otherdude.
+		this.crouching=otherdude.
+		this.maxHp=otherdude.
+		this.facing=otherdude.;
+		this.headBobRate=otherdude.headBobRate;
+		this.headBobTrack=otherdude.headBobTrack;
+		this.bodyBobRate=otherdude.bodyBobRate;
+		this.bodyBobTrack=otherdude.bodyBobTrack;
+		this.breathRate=otherdude.breathRate;
+		this.breathTrack=otherdude.breathTrack;
+		this.bobs=otherdude.bobs;
+		this.speedFactor=otherdude.speedFactor;
+		this.friction=otherdude.friction;
+		this.breathing=otherdude.breathing;
+		this.crouching=otherdude.crouching;
+		this.bobbingUp=otherdude.bobbingUp;
+		this.bodyBobbingUp=otherdude.bodyBobbingUp;
+		this.headSprites=otherdude.headSprites;
+		this.chestSprites=otherdude.chestSprites;
+		this.legSprites=otherdude.legSprites;
+		this.hairSprites=otherdude.hairSprites;
+
+		this.faceSprites=otherdude.faceSprites;
+		
+	
+
+		this.equipment=otherdude.eqipment;*/
+
+	}
 }
 
 dude.prototype.kill=function()
@@ -349,10 +489,18 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 				this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 			}
 	}
+	
 	for(var i=0;i<this.arms.length;i++)
 	{
 		this.arms[i].draw(can,cam);
 	}
+	
+	
+	/*for(var i=0;i<this.arms.length;i++)
+	{*/
+		this.arms[0].drawSleeves(can,cam,false);
+		this.arms[1].drawSleeves(can,cam,true);
+	//}
 	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
 
@@ -700,5 +848,10 @@ dude.prototype.equip=function(thing)
 	//remove and add to inventory
   }
   this.equipment[thing.slot]=thing;
+  if(this.slot==EquipSlots.Chest)
+  {
+  
+  
+  }
   //confer bonuses
 };

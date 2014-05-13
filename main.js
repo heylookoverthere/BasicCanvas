@@ -7,7 +7,7 @@ people.push(miles);
 for(var i=0;i<12;i++)
 {
 	var giles=new dude();
-	giles.x=Math.random()*1600;
+	giles.x=Math.random()*219*16;
 	giles.y=10;
 	giles.dancing=true;
 	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
@@ -582,15 +582,13 @@ function mainMenuUpdate(){
 	
 	
 	
-	//gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
-	if(controller.pad)
+	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
+	if(controller.buttons[7].check())
 	{
-		if(controller.buttons[7].check())
-		{
-			startGame();
-		}
+		console.log("yart");
+		startGame();
 	}
-	
+		
 	if(startkey.check()){
 		startGame();
 	}
