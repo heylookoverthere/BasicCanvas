@@ -24,10 +24,10 @@ sleeveColorList.push("DAFF7F");
 sleeveColorList.push("white");//("007F0E");
 
 
-var platformer=false;
+var platformer=true;
 var friction=0.07;
 
-function gun(guy)
+function gun(guy,type)
 {
 	this.guy=guy;
 	this.name="Checkov's Gun";
@@ -38,7 +38,19 @@ function gun(guy)
 	this.shotsPer=1;
 	this.reloadSpeed=1;
 	this.shotSpeed=4;
-	this.sprite=Sprite("gun0");
+	if(type==0)
+	{	
+		this.sprite=Sprite("gun0");
+		this.bothArms=false;
+		this.xOffset=-3;
+		this.yOffset=-3;
+	}else
+	{
+		this.sprite=Sprite("gun1");
+		this.bothArms=true;
+		this.xOffset=-18;
+		this.yOffset=-6;
+	}
 
 }
 
@@ -60,7 +72,7 @@ gun.prototype.draw=function(can,cam)
 	
 	}
 	//can.scale(cam.zoom,cam.zoom);
-	this.sprite.draw(can, -3,-3);
+	this.sprite.draw(can, this.xOffset,this.yOffset);
 	can.restore();
 
 }
@@ -311,7 +323,7 @@ function dude(otherdude)
 	this.aimAngle=90;
 	this.inBox=false;
 	this.dongle=true;
-	this.gun=new gun(this);
+	this.gun=new gun(this,Math.floor(Math.random()*2));
 	this.flashing=false;
 	this.wingsOut=false;
 	this.wingsOut=false;
@@ -541,6 +553,17 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 			}
 	}
 	
+
+	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+
+	if(this.equipment[EquipSlots.Helmet].visible)
+	{
+		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	}else
+	{
+		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+	}
 	for(var i=0;i<this.arms.length;i++)
 	{
 		this.arms[i].draw(can,cam);
@@ -552,16 +575,6 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 		this.arms[0].drawSleeves(can,cam,false);
 		this.arms[1].drawSleeves(can,cam,true);
 	//}
-	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
-	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
-
-	if(this.equipment[EquipSlots.Helmet].visible)
-	{
-		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
-	}else
-	{
-		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
-	}
 	if(this.equipment[EquipSlots.Ring].visible)
 	{
 		this.equipment[EquipSlots.Ring].sprite.draw(can,0,0);
@@ -758,10 +771,18 @@ dude.prototype.update=function()
 
 				this.arms[0].backArm.angle=180;
 				this.arms[1].backArm.angle=100;
+				if(this.gun.bothArms)
+				{
+					this.arms[1].backArm.angle=180;
+				}
 			}else
 			{
 				this.arms[1].backArm.angle=360;
 				this.arms[0].backArm.angle=100;
+				if(this.gun.bothArms)
+				{
+					this.arms[0].backArm.angle=360;
+				}
 			}
 		}
 	}else
