@@ -38,18 +38,26 @@ function gun(guy,type)
 	this.shotsPer=1;
 	this.reloadSpeed=1;
 	this.shotSpeed=4;
+	this.aimAdjHead=0;
 	if(type==0)
 	{	
 		this.sprite=Sprite("gun0");
 		this.bothArms=false;
 		this.xOffset=-3;
 		this.yOffset=-3;
-	}else
+	}else if(type==1)
 	{
 		this.sprite=Sprite("gun1");
 		this.bothArms=true;
 		this.xOffset=-18;
 		this.yOffset=-6;
+	}else
+	{
+		this.sprite=Sprite("gun2");
+		this.bothArms=true;
+		this.xOffset=-18;
+		this.yOffset=-6;
+		this.aimAdjHead=4;
 	}
 
 }
@@ -323,7 +331,12 @@ function dude(otherdude)
 	this.aimAngle=90;
 	this.inBox=false;
 	this.dongle=true;
-	this.gun=new gun(this,Math.floor(Math.random()*2));
+	this.gunTrack=0;
+	this.guns=[];
+	this.guns.push(new gun(this,0));
+	this.guns.push(new gun(this,1));
+	this.guns.push(new gun(this,2));
+	this.gun=null;
 	this.flashing=false;
 	this.wingsOut=false;
 	this.wingsOut=false;
@@ -506,6 +519,27 @@ function dude(otherdude)
 	}
 }
 
+dude.prototype.cycleGuns=function()
+{
+	this.gunTrack++;
+	if(this.gunTrack>this.guns.length-1)
+	{
+		this.gunTrack=0;
+	}
+	this.gun=this.guns[this.gunTrack];
+};
+
+dude.prototype.toggleArmed=function()
+{
+	if(this.gun)
+	{
+		this.gun=null;
+	}else
+	{
+		this.gun=this.guns[this.gunTrack];
+	}
+};
+
 dude.prototype.kill=function()
 {
 	this.hp=0;
@@ -552,17 +586,22 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 				this.equipment[EquipSlots.Legs].sprite.draw(can,0,0);
 			}
 	}
-	
+	var wump=0;
+	if((this.aiming) && (this.gun) && (!this.crouching))
+	{
+		wump=this.gun.aimAdjHead;
+	}
 
-	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
-	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		
+	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
+	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
 
 	if(this.equipment[EquipSlots.Helmet].visible)
 	{
-		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
 	}else
 	{
-		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead);
+		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
 	}
 	for(var i=0;i<this.arms.length;i++)
 	{

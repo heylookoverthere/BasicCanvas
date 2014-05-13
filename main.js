@@ -2,7 +2,7 @@ var debugInfo=false;
 var people=[];
 var miles=new dude();
 miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
-miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
+miles.gun=miles.guns[0];
 people.push(miles);
 for(var i=0;i<12;i++)
 {
@@ -736,9 +736,10 @@ function mainUpdate()
 		}
 		if(controller.buttons[2].check())
 		{
-			miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
+			/*miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 			miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
-			miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
+			miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);*/
+			miles.cycleGuns();
 		}
 		
 		if(!platformer)
