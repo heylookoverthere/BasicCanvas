@@ -45,17 +45,21 @@ function gun(guy)
 gun.prototype.draw=function(can,cam)
 {
 	can.save();
-
-	//can.translate((this.guy.x-cam.tileX*16)*cam.zoom+16,(this.guy.y-cam.tileY*16)*cam.zoom+16);
-	//
-	can.translate((this.guy.x+this.guy.arms[1].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[1].backArm.joint2.y-cam.tileY*16)*cam.zoom);
-	can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
-	//can.scale(cam.zoom,cam.zoom);
-		if(this.guy.facingLeft)
+	if(this.guy.facingLeft)
 	{
+		can.translate((this.guy.x+this.guy.arms[0].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[0].backArm.joint2.y-cam.tileY*16)*cam.zoom);
+		can.rotate((this.guy.arms[0].backArm.angle)* (Math.PI / 180));
+		
 		//flip it.
+		
 		can.scale(1, -1);
+	}else
+	{
+		can.translate((this.guy.x+this.guy.arms[1].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[1].backArm.joint2.y-cam.tileY*16)*cam.zoom);
+		can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
+	
 	}
+	//can.scale(cam.zoom,cam.zoom);
 	this.sprite.draw(can, -3,-3);
 	can.restore();
 
@@ -292,10 +296,20 @@ arm.prototype.drawSleeves=function(can,cam,wang)
 	
 }
 
+arm.prototype.relax=function()
+{
+	this.backArm.angle=90;
+}
+
 function dude(otherdude)
 {	
 	if(!otherdude)
 	{
+	this.aiming=false;
+	this.aimingUp=false;
+	this.aimingDown=false;
+	this.aimAngle=90;
+	this.inBox=false;
 	this.dongle=true;
 	this.gun=new gun(this);
 	this.flashing=false;
@@ -719,9 +733,42 @@ dude.prototype.onSurface=function()
 	}
 	return true;
 };
+
+dude.prototype.shoot=function()
+{
+	console.log("boom");
+	monsta.shootTextured(this.gun.x,this.gun.y,90,.5,"explosion0");
+};
+
 dude.prototype.update=function()
 {
 	if(!this.alive) {return;}
+	if(this.aiming)
+	{
+		if(this.aimingUp)
+		{
+		
+		}else if(this.aimingDown)
+		{
+		
+		}else
+		{
+			if(this.facingLeft)
+			{
+
+				this.arms[0].backArm.angle=180;
+				this.arms[1].backArm.angle=100;
+			}else
+			{
+				this.arms[1].backArm.angle=360;
+				this.arms[0].backArm.angle=100;
+			}
+		}
+	}else
+	{
+		this.arms[0].relax();
+		this.arms[1].relax();
+	}
 	if(this.dancing)
 	{
 		this.danceTrack++;
@@ -733,8 +780,8 @@ dude.prototype.update=function()
 		if(this.danceFlag)
 		{
 			this.crouching=true;
-			this.arms[0].backArm.angle=90;
-			this.arms[1].backArm.angle=90;
+			this.arms[0].relax();
+			this.arms[1].relax();
 		}else
 		{
 			this.crouching=false;
@@ -742,7 +789,7 @@ dude.prototype.update=function()
 			this.arms[1].backArm.angle=345;
 		}
 		
-	}else
+	}else if(!this.aiming)
 	{
 		if(this.wingsOut)
 		{
@@ -750,8 +797,8 @@ dude.prototype.update=function()
 			this.arms[1].backArm.angle=345;
 		}else
 		{
-			this.arms[0].backArm.angle=90;
-			this.arms[1].backArm.angle=90;
+			this.arms[0].relax();
+			this.arms[1].relax();
 		}
 	}
 	for(var i=0;i<this.arms.length;i++)
