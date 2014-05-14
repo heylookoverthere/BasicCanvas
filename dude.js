@@ -1021,7 +1021,7 @@ dude.prototype.update=function()
 		
 		var proposedX=this.x+=this.xV;
 		var proposedY=this.y+=this.yV;
-		if(curMap.walkable(Math.floor(proposedX/16),Math.floor(proposedY/16)))
+		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) )
 		{
 			this.x=proposedX;
 			this.y=proposedY;
