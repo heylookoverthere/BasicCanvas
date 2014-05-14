@@ -10,7 +10,7 @@ for(var i=0;i<12;i++)
 	var giles=new dude();
 	giles.x=Math.random()*219*16;
 	giles.y=10;
-	giles.gesturing=true;
+	giles.doGesture(GestureTypes.Dance,100000);
 	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 	giles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 	giles.equip(helmetList[9]);
