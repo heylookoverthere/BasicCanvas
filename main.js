@@ -10,11 +10,21 @@ for(var i=0;i<12;i++)
 	var giles=new dude();
 	giles.x=Math.random()*219*16;
 	giles.y=10;
-	giles.doGesture(GestureTypes.Dance,100000);
+	//giles.doGesture(GestureTypes.Dance,100000);
 	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 	giles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 	giles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
 	people.push(giles);
+}
+
+function allPoint(guy)
+{
+	for (var i=1;i<people.length;i++)
+	{
+	
+		people[i].doGesture(GestureTypes.Point,50000,miles);
+		//console.log(":yar:");
+	}
 }
 
 //camera.center(miles);
@@ -810,6 +820,7 @@ function mainUpdate()
 	{
 		//platformer=!platformer;
 		debugInfo=!debugInfo;
+		allPoint(miles);
 	}
 	if(controller.buttons[6].check())
 	{

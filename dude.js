@@ -342,7 +342,7 @@ function dude(otherdude)
 	this.shakeTrack=0;
 	this.shakeRate=1;
 	this.shakeFlag=false
-	this.shakeOffset=5;
+	this.shakeOffset=0;
 	this.aiming=false;
 	this.aimingUp=false;
 	
@@ -835,11 +835,12 @@ dude.prototype.shoot=function()
 	monsta.shootTextured(this.gun.x,this.gun.y,90,.5,"explosion0");
 };
 
-dude.prototype.doGesture=function(type,dur)
+dude.prototype.doGesture=function(type,dur,obj)
 {
 	this.gesturing=true;
 	this.gesture=type;
 	this.gestureDuration=dur;
+	this.gesturingAt=obj;
 	var atimestamp = new Date();
 	this.gestureStart=atimestamp.getTime();
 };
@@ -851,6 +852,7 @@ dude.prototype.stopGesturing=function()
 	if(this.gesture==GestureTypes.Cower)
 	{
 		this.shaking=false;
+		this.shakeOffset=0;
 	}
 }
 
@@ -962,6 +964,19 @@ dude.prototype.update=function()
 			{
 				this.arms[0].backArm.angle=270;
 				this.arms[1].backArm.angle=270;
+			
+			}else if(this.gesture==GestureTypes.Point)
+			{
+				var beta=Math.atan2(this.gesturingAt.y-this.y,this.gesturingAt.x-this.x)* (180 / Math.PI);
+	
+				if(this.gesturingAt.x>this.x)
+				{
+					this.arms[1].backArm.angle=beta;
+				}else
+				{
+					this.arms[0].backArm.angle=beta;
+				}
+				//this.arms[1].backArm.angle=270;
 			
 			}else if(this.gesture==GestureTypes.Cower)
 			{
