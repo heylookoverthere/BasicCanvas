@@ -16,6 +16,11 @@ GestureTypes={};
 GestureTypes.Surrender=0;
 GestureTypes.Wave=1;
 GestureTypes.Dance=2;
+GestureTypes.Waft=3;
+GestureTypes.Cower=4;
+GestureTypes.Point=5;
+GestureTypes.HeardSomething=6;
+GestureTypes.Suprised=7;
 
 var sleeveColorList=[];
 sleeveColorList.push("4800FF");
@@ -155,7 +160,7 @@ legArmorList.push(noLegs);
 helmetList.push(noHelmet);
 var numshirts=9;
 var numpants=7;
-var numhelmets=9;
+var numhelmets=13;
 var numfaces=4;
 var numhair=9;
 for(var i=0;i<numshirts;i++)
@@ -333,6 +338,11 @@ function dude(otherdude)
 {	
 	if(!otherdude)
 	{
+	this.shaking=false;
+	this.shakeTrack=0;
+	this.shakeRate=1;
+	this.shakeFlag=false
+	this.shakeOffset=5;
 	this.aiming=false;
 	this.aimingUp=false;
 	
@@ -601,7 +611,7 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 
 	//can.translate((this.x+cam.tileX)*cam.zoom,(this.y+cam.tileY)*cam.zoom);
 	//can.translate(CANVAS_WIDTH/2,CANVAS_HEIGHT/2);
-	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
+	can.translate((this.x-cam.tileX*16)*cam.zoom+this.shakeOffset,(this.y-cam.tileY*16)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
 	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
@@ -834,6 +844,16 @@ dude.prototype.doGesture=function(type,dur)
 	this.gestureStart=atimestamp.getTime();
 };
 
+dude.prototype.stopGesturing=function()
+{
+
+	this.gesturing=false;
+	if(this.gesture==GestureTypes.Cower)
+	{
+		this.shaking=false;
+	}
+}
+
 dude.prototype.update=function()
 {
 	if(!this.alive) {return;}
@@ -876,6 +896,26 @@ dude.prototype.update=function()
 		this.arms[0].relax();
 		this.arms[1].relax();
 	}
+	
+	if(this.shaking)
+	{
+		this.shakeTrack++;
+		if(this.shakeTrack>this.shakeRate)
+		{
+			this.shakeTrack=0;
+			this.shakeFlag=!this.shakeFlag;
+		}
+		if (this.shakeFlag)
+		{
+			this.shakeOffset=0.5;
+		}else
+		
+		{
+			this.shakeOffset=-0.5;
+		}
+	
+	}
+	
 	if(this.gesturing)
 	{
 		var atimestamp = new Date();
@@ -923,6 +963,13 @@ dude.prototype.update=function()
 				this.arms[0].backArm.angle=270;
 				this.arms[1].backArm.angle=270;
 			
+			}else if(this.gesture==GestureTypes.Cower)
+			{
+				this.arms[0].backArm.angle=300;
+				this.arms[1].backArm.angle=240;
+				this.crouching=true;
+				this.shaking=true;
+			
 			}else if(this.gesture==GestureTypes.Waft)
 			{
 				this.gestureTrack++;
@@ -943,7 +990,7 @@ dude.prototype.update=function()
 			}
 		}else
 		{
-			this.gesturing=false;
+			this.stopGesturing();
 		}
 	}else if(!this.aiming)
 	{

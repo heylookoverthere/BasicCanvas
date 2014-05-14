@@ -13,7 +13,7 @@ for(var i=0;i<12;i++)
 	giles.doGesture(GestureTypes.Dance,100000);
 	giles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 	giles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
-	giles.equip(helmetList[9]);
+	giles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
 	people.push(giles);
 }
 
@@ -981,7 +981,7 @@ function mainUpdate()
 			}
 			if(controller.checkLeft())
 			{
-				miles.gesturing=false;
+				miles.stopGesturing();
 				miles.facingLeft=true;
 				if(!miles.aiming)
 				{
@@ -1009,7 +1009,7 @@ function mainUpdate()
 			if(controller.checkRight())
 			{	
 				miles.facingLeft=false;
-				miles.gesturing=false;
+				miles.stopGesturing();
 				if(!miles.aiming)
 				{
 					
