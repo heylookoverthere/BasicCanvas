@@ -686,10 +686,10 @@ function mainDraw() {
 	}
 	monsta.draw(canvas,camera);
 
-	dingle(0,1);
+	/*dingle(0,1);
 	dingle(0,0);
 	dingle(1,0);
-	dingle(1,1);
+	dingle(1,1);*/
 	
 	//canvas.fillRect(miles.tileX+camera.x,miles.tileY+camera.y,16,16);
 	

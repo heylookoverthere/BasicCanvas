@@ -1154,11 +1154,20 @@ dude.prototype.update=function()
 	
 	var proposedX=this.x+this.xV;
 	var proposedY=this.y+this.yV;
-		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize)+1))&& (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)) )
-			/*if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)))*/
+	if(!platformer)
 	{
-		this.x=proposedX;
-		this.y=proposedY;
+		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize)+1))&& (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)) )
+		{
+			this.x=proposedX;
+			this.y=proposedY;
+		}
+	}else 
+	{
+		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) )
+		{
+			this.x=proposedX;
+			this.y=proposedY;
+		}
 	}
 
 
