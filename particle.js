@@ -1,7 +1,12 @@
 function particle(){
+	this.shooter=null;
 	this.alive=false;
 	this.x=0;
 	this.y=0;
+	this.damage=0;
+	this.centerX=0;
+	this.centerY=0;
+	this.collisions=false;
 	this.color=bColors[Math.floor(Math.random()*8)];
 	this.gravity=false;
 	this.xv=0;
@@ -30,6 +35,16 @@ function particle(){
 	//this.startTime=
 	//this.curTime=
 	//this.durTime=2;
+}
+
+particle.prototype.checkCollision=function(thing)
+{
+	//if(((thing.x+this.x)>0) && ((thing.x+this.x)<CANVAS_WIDTH)&& ((thing.y+this.y)>0) && ((thing.y+this.y)<CANVAS_HEIGHT))
+	if((this.x+8>thing.x) && (this.x-8<thing.x+thing.width) && (this.y+8>thing.y) && (this.y-8<thing.y+thing.height))
+	{
+			return true;
+	}
+	return false;
 }
 
 particle.prototype.update=function(){
@@ -65,12 +80,25 @@ particle.prototype.update=function(){
 		}
 		if(this.gravity)
 		{
-				this.yv+=0.5;
+				this.yv+=0.35;
 		}
 		//this.counter--;
 		//time stuff
 		//if (this.counter<1) this.alive=false;
-
+		if(this.collisions)
+		{
+			//TODO
+			for(var i=0;i<people.length;i++)
+			{
+				if(this.checkCollision(people[i]))
+				{
+					//people[i].doGesture(GestureTypes.Cower,50000);
+					//console.log("hit");
+					this.alive=false;
+					people[i].hurt(this.damage,this.shooter);
+				}
+			}
+		}
 
 	};
 
@@ -114,6 +142,29 @@ particleSystem.prototype.startTextured=function(dur,x,y,xv,yv,color,gravity,expl
 		var stamp = new Date();
 		tod.startTime=stamp.getTime();
 		tod.durTime=dur;
+		this.particles.push(tod);
+	};                                        
+particleSystem.prototype.shootProjectile=function(x,y,ang,spd,exploader,spt,shooter,dmg){
+		var tod=new particle();
+		if(!exploader) {exploader=false;}
+		tod.shooter=shooter;
+		tod.x=x;
+		tod.y=y;
+		tod.damage=dmg;
+		tod.xv=Math.cos(ang* (Math.PI / 180))*spd; 
+		tod.yv=Math.sin(ang*(Math.PI / 180))*spd;
+		tod.alive=true;
+		tod.textured=true;
+		tod.sprite=Sprite(spt);
+		tod.counter=50000;
+		tod.collisions=true;
+		//tod.color=color;
+		tod.gravity=true;
+		tod.exploader=exploader;
+		var stamp = new Date();
+		tod.startTime=stamp.getTime();
+		tod.durTime=50000;
+		shooter.bullets.push(tod);
 		this.particles.push(tod);
 	};
 particleSystem.prototype.draw=function(can,cam){

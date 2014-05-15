@@ -5,7 +5,7 @@ miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 miles.gun=miles.guns[0];
 people.push(miles);
-for(var i=0;i<12;i++)
+for(var i=0;i<24;i++)
 {
 	var giles=new dude();
 	giles.x=Math.random()*219*16;
@@ -612,7 +612,6 @@ function mainMenuUpdate(){
 	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
 	if(controller.buttons[7].check())
 	{
-		console.log("yart");
 		startGame();
 	}
 		
@@ -714,23 +713,16 @@ function mainUpdate()
     tick++;
 	gamepad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
 	
-	//console.log(gamepad.axes[0]);
-	
-	/*console.log(gamepad.buttons[0],gamepad.buttons[1],gamepad.buttons[2],gamepad.buttons[3],gamepad.buttons[4],gamepad.buttons[5],gamepad.buttons[6],gamepad.buttons[7],gamepad.buttons[8],gamepad.buttons[14],gamepad.buttons[15]);*/
-	
-
-	/*if(gamepad.buttons[0]===1)
+	for(var i=0;i<people.length;i++)
 	{
-		console.log("zero");
+		if(!people[i].alive)
+		{
+			people.splice(i,1);
+			i--;
+		}
 	}
-	if(gamepad.buttons[1]==1)
-	{
-		console.log("one");
-	}
-	if(gamepad.buttons[2]==1)
-	{
-		console.log("two");
-	}*/
+	
+	
 	if((controller.keyboard ) ||(controller.pad))
 	{
 		if(controller.buttons[7].check())

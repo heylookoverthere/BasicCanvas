@@ -48,6 +48,7 @@ function gun(guy,type)
 	this.name="Checkov's Gun";
 	this.damage=5;
 	this.recoil=2;
+	this.inaccuracy=3;
 	this.kockback=1;
 	this.clipSize=10;
 	this.shotsPer=1;
@@ -68,6 +69,8 @@ function gun(guy,type)
 		//this.angleOffset=15;
 		this.xOffset=-18;
 		this.yOffset=-6;
+		this.shotsPer=5;
+		this.innaccuracy=10;
 	}else
 	{
 		this.sprite=Sprite("gun2");
@@ -86,7 +89,7 @@ gun.prototype.draw=function(can,cam)
 	{
 		can.translate((this.guy.x+this.guy.arms[0].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[0].backArm.joint2.y-cam.tileY*16)*cam.zoom);
 		can.rotate((this.guy.arms[0].backArm.angle)* (Math.PI / 180));
-		
+		this.guy.gunArm=this.guy.arms[0];
 		//flip it.
 		
 		can.scale(1, -1);
@@ -94,7 +97,7 @@ gun.prototype.draw=function(can,cam)
 	{
 		can.translate((this.guy.x+this.guy.arms[1].backArm.joint2.x-cam.tileX*16)*cam.zoom,(this.guy.y+this.guy.arms[1].backArm.joint2.y-cam.tileY*16)*cam.zoom);
 		can.rotate((this.guy.arms[1].backArm.angle)* (Math.PI / 180));
-	
+		this.guy.gunArm=this.guy.arms[1];
 	}
 	//can.scale(cam.zoom,cam.zoom);
 	this.sprite.draw(can, this.xOffset,this.yOffset);
@@ -374,9 +377,13 @@ function dude(otherdude)
 	if(!otherdude)
 	{
 	this.shaking=false;
+	this.bullets=[];
+	
 	this.shakeTrack=0;
 	this.shakeRate=1;
 	this.shakeFlag=false
+	this.maxSpeedX=10;
+	this.maxSpeedY=20;
 	this.shakeOffset=0;
 	this.aiming=false;
 	this.aimingUp=false;
@@ -907,8 +914,47 @@ dude.prototype.onSurface=function()
 
 dude.prototype.shoot=function()
 {
-	console.log("boom");
-	monsta.shootTextured(this.gun.x,this.gun.y,90,.5,"explosion0");
+	//console.log("boom");
+	var damage=15;
+	if(this.shotPer>1)
+	{
+		damage=3;
+	}
+	if(this.gun.ID=2)
+	{
+		damage=30;
+	}
+	for(var i=0;i<this.gun.shotsPer;i++)
+	{
+	var wobble=Math.random()*this.gun.inaccuracy;
+	if(Math.random()*10>5)
+	{
+		wobble=-Math.random()*this.gun.inaccuracy;
+	}
+	 if(this.facingLeft)
+		{
+			if(this.aimingUp)
+			{
+				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletup",this,damage);
+			}else if(this.aimingDown)
+			{
+				monsta.shootProjectile(this.x-2,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletdown",this,damage);
+			}else{
+				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletleft",this,damage);
+			}
+		}else
+		{
+			if(this.aimingUp)
+			{
+				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletup",this,damage);
+			}else if(this.aimingDown)
+			{
+				monsta.shootProjectile(this.x+16,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletdown",this,damage);
+			}else{
+				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletright",this,damage);
+			}
+		}
+	}
 };
 
 dude.prototype.doGesture=function(type,dur,obj)
@@ -934,7 +980,15 @@ dude.prototype.stopGesturing=function()
 }
 
 dude.prototype.update=function()
-{
+{	
+	for(var i=0;i<this.bullets.length;i++)
+	{
+		if(!this.bullets[i].alive)
+		{
+			this.bullets.splice(i,1);
+			i--;
+		}
+	}
 	if(!this.alive) {return;}
 	if(this.aiming)
 	{
@@ -1152,6 +1206,14 @@ dude.prototype.update=function()
 		}
 	}
 	
+	if(this.xV>this.maxSpeedX)
+	{
+		this.xV=this.maxSpeedX;
+	}
+	if(this.yV>this.maxSpeedY)
+	{
+		this.yV=this.maxSpeedY;
+	}
 	var proposedX=this.x+this.xV;
 	var proposedY=this.y+this.yV;//seperate checks to x and y, start fallinw when you jump into something, bounce when you land on something.
 	if(!platformer)

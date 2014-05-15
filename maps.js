@@ -124,6 +124,8 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	},
 	update: function(){
 		this.updateTile();
+		this.x=this.tileX*tileSize;
+		this.y=this.tileY*tileSize;
 		if (this.following)
 		{
 			if(!this.following.alive)
@@ -670,7 +672,7 @@ function Map(I) { //map object
 
     I.drawRadar= function (cam,x,y,arm) {
 		
-		if(mode<1){return;}
+		//if(mode<1){return;}
 		if(!starting) {return;}
         cam.check();
         //canvas.save();
