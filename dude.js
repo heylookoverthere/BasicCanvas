@@ -1153,17 +1153,17 @@ dude.prototype.update=function()
 	}
 	
 	var proposedX=this.x+this.xV;
-	var proposedY=this.y+this.yV;
+	var proposedY=this.y+this.yV;//seperate checks to x and y, start fallinw when you jump into something, bounce when you land on something.
 	if(!platformer)
 	{
-		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize)+1))&& (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)) )
+		if((Math.round(proposedX/tileSize)>0) && (Math.round(proposedY/tileSize)>0) && (curMap.walkable(Math.round(proposedX/tileSize),Math.round(proposedY/tileSize))) && (curMap.walkable(Math.round(proposedX/tileSize)+1,Math.round(proposedY/tileSize))) && (curMap.walkable(Math.round(proposedX/tileSize)+1,Math.round(proposedY/tileSize)+1))&& (curMap.walkable(Math.round(proposedX/tileSize),Math.round(proposedY/tileSize)+1)) )
 		{
 			this.x=proposedX;
 			this.y=proposedY;
 		}
 	}else 
 	{
-		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) )
+		if((Math.round(proposedX/tileSize)>0) && (Math.round(proposedY/tileSize)>0) && (curMap.walkable(Math.round(proposedX/tileSize),Math.round(proposedY/tileSize))) && (curMap.walkable(Math.round(proposedX/tileSize)+1,Math.round(proposedY/tileSize))) )
 		{
 			this.x=proposedX;
 			this.y=proposedY;
@@ -1177,7 +1177,7 @@ dude.prototype.update=function()
 
 		
 		
-		if((curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)) || (curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)))//problem, getting stuck in ground.
+		if((curMap.canStand(Math.round(this.x/tileSize)+1,Math.round(this.y/tileSize)+2)) || (curMap.canStand(Math.round(this.x/tileSize)+1,Math.round(this.y/tileSize)+2)))//problem, getting stuck in ground.
 		{
 			this.falling=false;
 			this.pounding=false;
