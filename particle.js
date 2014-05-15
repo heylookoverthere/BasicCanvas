@@ -118,9 +118,10 @@ particleSystem.prototype.startTextured=function(dur,x,y,xv,yv,color,gravity,expl
 	};
 particleSystem.prototype.draw=function(can,cam){
 		var c=1;
+
 		for(var i=0;i<this.particles.length;i++)
 		{
-			if(this.particles[i].alive)
+			if((this.particles[i].alive) && (cam.isOn(this.particles[i])))
 			{
 				if (true){//this.particles[i].color!=c){
 					can.fillStyle = this.particles[i].color;
@@ -128,7 +129,7 @@ particleSystem.prototype.draw=function(can,cam){
 				}
 				if(this.particles[i].textured)
 				{
-					this.particles[i].sprite.draw(can, this.particles[i].x+cam.tileX,this.particles[i].y+cam.tileY);
+					this.particles[i].sprite.draw(can, this.particles[i].x-cam.tileX*tileSize,this.particles[i].y-cam.tileY*tileSize);
 				}else
 				{
 					can.fillRect(this.particles[i].x+cam.tileX, this.particles[i].y+cam.tileY, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);

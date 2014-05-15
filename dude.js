@@ -40,7 +40,7 @@ sleeveColorList.push("1F6300");
 var otherControls=true;
 var aimSpeed=9;
 var platformer=true;
-var friction=0.07;
+var friction=0.09;
 
 function gun(guy,type)
 {

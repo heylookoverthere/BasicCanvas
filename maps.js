@@ -114,6 +114,13 @@ var camera = {  //represents the camera, aka what part of the map is on screen
 	},
 	unFollow: function(){
 		this.following=null;
+	},	isOn: function(thing)
+	{
+		if(((thing.x-this.tileX*tileSize)*this.zoom>0) && ((thing.x-this.tileX*tileSize)*this.zoom<CANVAS_WIDTH)&& ((thing.y-this.tileY*tileSize)*this.zoom>0) && ((thing.y-this.tileY*tileSize)*this.zoom<CANVAS_HEIGHT))
+		{
+			return true;
+		}
+		return false;
 	},
 	update: function(){
 		this.updateTile();

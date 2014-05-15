@@ -594,7 +594,7 @@ function startGame()
 }
 
 function mainMenuUpdate(){
-	startGame();
+	//startGame();
 	var tick=0;
 	lasttime=milliseconds;
     timestamp = new Date();
