@@ -686,10 +686,10 @@ function mainDraw() {
 	}
 	monsta.draw(canvas,camera);
 
-	/*dingle(0,1);
+	dingle(0,1);
 	dingle(0,0);
 	dingle(1,0);
-	dingle(1,1);*/
+	dingle(1,1);
 	
 	//canvas.fillRect(miles.tileX+camera.x,miles.tileY+camera.y,16,16);
 	
@@ -882,7 +882,7 @@ function mainUpdate()
 		{
 			//speedMulti=3;
 			//miles.speedFactor=30;
-			
+			miles.running=1;
 			//controller.buttons[3].aflag=false;
 			miles.accelerate();
 			if(miles.speedFactor>15)
@@ -897,7 +897,7 @@ function mainUpdate()
 		}else
 		{
 			//miles.speedFactor=10;
-			
+			miles.running=1;
 			miles.deccelerate();
 			//speedMulti=1;
 			if(!miles.pounding)
@@ -907,7 +907,13 @@ function mainUpdate()
 			miles.tailLength=5;
 		}
 	
-	
+	if (controller.buttons[3].checkDown())
+	{
+			miles.running=2;
+	}else
+	{
+		miles.running=1;
+	}
 	
 	if(true)
 	{
@@ -915,35 +921,42 @@ function mainUpdate()
 		{
 			if(controller.checkUp())
 			{
-				miles.y-=miles.speed*(miles.speedFactor/10);
+				miles.yV=-4*miles.running;
+				//console.log(miles.running);
 				//camera.y-=miles.speed*speedMulti;
 				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y<0) {miles.y=0;}
 				mapDirty=true;
-			}
-			if(controller.checkDown())
+			}else if(controller.checkDown())
 			{
-				miles.y+=miles.speed*(miles.speedFactor/10);
+				miles.yV=4*miles.running;;//miles.speed*(miles.speedFactor/10);
 				//camera.y+=miles.speed*speedMulti;
 				//camera.y=miles.y-CANVAS_HEIGHT/2;
 				if(miles.y>curMap.height*tileSize-miles.height) {miles.y=(curMap.height-2)*tileSize}
 				mapDirty=true;
+			}else
+			{
+				miles.yV=0;
+		
 			}
 			if(controller.checkLeft())
 			{
-				miles.x-=miles.speed*(miles.speedFactor/10);
+				miles.xV=-4*miles.running;;//miles.speed*(miles.speedFactor/10);
 				//camera.x-=miles.speed*speedMulti;
 				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x<0) {miles.x=0;}
 				mapDirty=true;
-			}
-			if(controller.checkRight())
+			}else if(controller.checkRight())
 			{
-				miles.x+=miles.speed*(miles.speedFactor/10);
+				
+				miles.xV=4*miles.running;//miles.speed*(miles.speedFactor/10);
 				//camera.x+=miles.speed*speedMulti;
 				//camera.x=miles.x-CANVAS_WIDTH/2;
 				if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
 				mapDirty=true;
+			}else
+			{
+				miles.xV=0;
 			}
 		}else
 		{

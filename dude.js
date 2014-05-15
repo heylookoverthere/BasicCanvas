@@ -65,7 +65,7 @@ function gun(guy,type)
 	{
 		this.sprite=Sprite("gun1");
 		this.bothArms=true;
-		this.angleOffset=15;
+		//this.angleOffset=15;
 		this.xOffset=-18;
 		this.yOffset=-6;
 	}else
@@ -110,6 +110,8 @@ function armor(sprtext,sloot,id)
 	this.visible=false;
 	this.real=false;
 	this.slot=0;
+	this.coversHair=false;
+	this.coversFacialHair=false;
 	this.bonuses=[];
 	this.bonusVal=[];
 	if(sloot==EquipSlots.Chest)
@@ -167,6 +169,7 @@ var numpants=11;
 var numhelmets=24;
 var numfaces=4;
 var numhair=9;
+var numfacialhair=5;
 for(var i=0;i<numshirts;i++)
 {
 	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest,i));
@@ -184,6 +187,32 @@ for(var i=0;i<numhelmets;i++)
 	helmetList.push(new armor("helmet"+i,EquipSlots.Helmet));
 }
 //helmetList.push(new armor("
+
+for(var i=1;i<helmetList.length;i++)
+{
+	helmetList[i].coversHair=true;
+	helmetList[i].coversFacialHair=true;
+}
+
+
+helmetList[1].coversFacialHair=false;
+helmetList[3].coversFacialHair=false;
+helmetList[7].coversFacialHair=false;
+helmetList[8].coversFacialHair=false;
+helmetList[10].coversFacialHair=false;
+helmetList[10].coversHair=false;
+helmetList[11].coversFacialHair=false;
+helmetList[12].coversFacialHair=false;
+helmetList[12].coversHair=false;
+helmetList[13].coversFacialHair=false;
+helmetList[13].coversHair=false;
+helmetList[14].coversFacialHair=false;
+helmetList[14].coversHair=false;
+helmetList[15].coversFacialHair=false;
+helmetList[15].coversHair=false;
+helmetList[17].coversFacialHair=false;
+helmetList[17].coversHair=false;
+helmetList[21].coversFacialHair=false;
 
 
 function point()
@@ -352,7 +381,7 @@ function dude(otherdude)
 	this.aiming=false;
 	this.aimingUp=false;
 	this.heightOffset=Math.floor(Math.random()*220)/100;
-	
+	this.running=1;
 	this.aimingDown=false;
 	this.aimAngle=90;
 	this.inBox=false;
@@ -454,6 +483,15 @@ function dude(otherdude)
 	this.legSprites.push(Sprite("legs"+this.race));
 	this.hairSprites=[];
 	this.hairSprites.push(Sprite("hair"+Math.floor(Math.random()*numhair)));
+	this.facialHairSprites=[];
+	if(Math.random()*10>7)
+	{
+		this.facialHairSprites.push(Sprite("facialhair"+Math.floor(Math.random()*numfacialhair)));
+	}else
+	{
+		this.facialHairSprites.push(Sprite("facialhair"+0));
+	}
+	
 	this.faceSprites=[];
 	
 	this.faceSprites[0]=[];
@@ -671,13 +709,19 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 
-	if(this.equipment[EquipSlots.Helmet].visible)
-	{
-		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
-	}else
+	if(!this.equipment[EquipSlots.Helmet].coversHair)
 	{
 		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 	}
+	if(!this.equipment[EquipSlots.Helmet].coversFacialHair)
+	{
+		this.facialHairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
+	}
+	if(this.equipment[EquipSlots.Helmet].visible)
+	{
+		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
+	}
+
 	for(var i=0;i<this.arms.length;i++)
 	{
 		this.arms[i].draw(can,cam);
@@ -1108,19 +1152,22 @@ dude.prototype.update=function()
 		}
 	}
 	
+	var proposedX=this.x+this.xV;
+	var proposedY=this.y+this.yV;
+		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize)+1))&& (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)) )
+			/*if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize)+1,Math.floor(proposedY/tileSize))) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize)+1)))*/
+	{
+		this.x=proposedX;
+		this.y=proposedY;
+	}
+
 
 	
 	if(platformer)
 	{
 
 		
-		var proposedX=this.x+=this.xV;
-		var proposedY=this.y+=this.yV;
-		if((Math.floor(proposedX/tileSize)>0) && (Math.floor(proposedY/tileSize)>0) && (curMap.walkable(Math.floor(proposedX/tileSize),Math.floor(proposedY/tileSize))) )
-		{
-			this.x=proposedX;
-			this.y=proposedY;
-		}
+		
 		if((curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)) || (curMap.canStand(Math.floor(this.x/tileSize)+1,Math.floor(this.y/tileSize)+2)))//problem, getting stuck in ground.
 		{
 			this.falling=false;
@@ -1173,6 +1220,8 @@ dude.prototype.update=function()
 
 		mapDirty=true;
 	}
+
+	
 	/*this.x=Math.floor(this.x);
 	this.y=Math.floor(this.y);*/
 	if(this.x<0) {this.x=0;}
