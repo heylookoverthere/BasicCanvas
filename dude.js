@@ -32,6 +32,10 @@ sleeveColorList.push("D980FF");
 sleeveColorList.push("white");
 sleeveColorList.push("DAFF7F");
 sleeveColorList.push("white");//("007F0E");
+sleeveColorList.push("404040");
+sleeveColorList.push("404040");
+sleeveColorList.push("3A61FF");
+sleeveColorList.push("1F6300");
 
 var otherControls=true;
 var aimSpeed=9;
@@ -158,9 +162,9 @@ chestArmorList.push(noChest);
 
 legArmorList.push(noLegs);
 helmetList.push(noHelmet);
-var numshirts=9;
-var numpants=7;
-var numhelmets=19;
+var numshirts=13;
+var numpants=11;
+var numhelmets=24;
 var numfaces=4;
 var numhair=9;
 for(var i=0;i<numshirts;i++)
@@ -168,6 +172,7 @@ for(var i=0;i<numshirts;i++)
 	chestArmorList.push(new armor("shirt"+i,EquipSlots.Chest,i));
 }
 
+chestArmorList[10].sleeveLength=10;
 
 for(var i=0;i<numpants;i++)
 {
@@ -179,6 +184,7 @@ for(var i=0;i<numhelmets;i++)
 	helmetList.push(new armor("helmet"+i,EquipSlots.Helmet));
 }
 //helmetList.push(new armor("
+
 
 function point()
 {
@@ -237,7 +243,7 @@ bone.prototype.drawNew=function(can,cam)
 	can.lineWidth = 3;
 	//can.translate(0,0);
 	can.translate((this.x-cam.tileX*16)*cam.zoom,(this.y-cam.tileY*16)*cam.zoom);
-	can.moveTo(this.joint1.x,this.joint1.y);
+	can.moveTo(this.joint1.x,this.joint1.y-this.body.heightOffset);
 	if(true)//(this.joint2)
 	{
 		can.lineTo(this.joint2.x,this.joint2.y);
@@ -262,7 +268,7 @@ bone.prototype.drawSleeve=function(can,cam,wang)
 		can.strokeStyle = this.body.equipment[EquipSlots.Chest].sleeveColor;//"white"; 
 		can.beginPath();
 		can.lineWidth = 4;
-		can.moveTo(this.joint1.x,this.joint1.y);
+		can.moveTo(this.joint1.x,this.joint1.y-this.body.heightOffset);
 		var ax=	this.joint1.x+Math.cos(Math.radians(this.angle))*this.body.equipment[1].sleeveLength;
 		var ay= this.joint1.y+Math.sin(Math.radians(this.angle))*this.body.equipment[1].sleeveLength;
 		//can.lineTo(this.joint2.x,this.joint2.y);
@@ -345,6 +351,7 @@ function dude(otherdude)
 	this.shakeOffset=0;
 	this.aiming=false;
 	this.aimingUp=false;
+	this.heightOffset=Math.floor(Math.random()*220)/100;
 	
 	this.aimingDown=false;
 	this.aimAngle=90;
@@ -544,6 +551,31 @@ function dude(otherdude)
 	}
 }
 
+dude.prototype.equipOutfit=function(w)
+{
+	if(w==0) //knight
+	{
+		this.equip(legArmorList[8]);
+		this.equip(chestArmorList[10]);
+		this.equip(helmetList[6]);
+	}else 	if(w==1) //batman
+	{
+		this.equip(legArmorList[9]);
+		this.equip(chestArmorList[11]);
+		this.equip(helmetList[16]);
+	}else 	if(w==2) //superman
+	{
+		this.equip(legArmorList[10]);
+		this.equip(chestArmorList[12]);
+		this.equip(helmetList[0]);
+	}else 	if(w==3) //snake
+	{
+		this.equip(legArmorList[11]);
+		this.equip(chestArmorList[13]);
+		this.equip(helmetList[14]);
+	}
+};
+
 dude.prototype.cycleGuns=function()
 {
 	this.gunTrack++;
@@ -614,7 +646,7 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	can.translate((this.x-cam.tileX*16)*cam.zoom+this.shakeOffset,(this.y-cam.tileY*16)*cam.zoom);
 	can.scale(cam.zoom,cam.zoom);
 	this.legSprites[this.facing].draw(can, 0,0);
-	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj);
+	this.chestSprites[this.facing].draw(can, 0,this.bodyHeight+this.crouchAdj-this.heightOffset);
 
 	if(this.equipment[EquipSlots.Legs].visible)
 	{
@@ -622,7 +654,7 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	}
 	if(this.equipment[EquipSlots.Chest].visible)
 	{
-			this.equipment[EquipSlots.Chest].sprite.draw(can,0,this.bodyHeight+this.crouchAdj);
+			this.equipment[EquipSlots.Chest].sprite.draw(can,0,this.bodyHeight+this.crouchAdj-this.heightOffset);
 			if(false)//this.crouching)
 			{
 				this.legSprites[this.facing].draw(can, 0,0);
@@ -636,15 +668,15 @@ dude.prototype.draw=function(can,cam) //todo change to draw sprite.
 	}
 
 		
-	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
-	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
+	this.headSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
+	this.faceSprites[this.facing][this.expression].draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 
 	if(this.equipment[EquipSlots.Helmet].visible)
 	{
-		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
+		this.equipment[EquipSlots.Helmet].sprite.draw(can,0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 	}else
 	{
-		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead+wump);
+		this.hairSprites[this.facing].draw(can, 0,this.bodyHeight+this.headHeight+this.crouchAdj+this.crouchAdjHead-this.heightOffset+wump);
 	}
 	for(var i=0;i<this.arms.length;i++)
 	{

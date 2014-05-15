@@ -449,6 +449,10 @@ var helpkey=new akey("h");
 helpkey.desc="You just pressed it."
 edskeys.push(helpkey);
 
+var outfitkey=new akey("o");
+outfitkey.desc="change into a random outfit."
+edskeys.push(outfitkey);
+
 var startkey=new akey("return");
 pageupkey.desc="It's the fucking enter button."
 edskeys.push(startkey);
@@ -826,6 +830,11 @@ function mainUpdate()
 	if(controller.buttons[6].check())
 	{
 		platformer=!platformer;
+	}
+	
+	if(outfitkey.check())
+	{
+		miles.equipOutfit(Math.floor(Math.random()*4));
 	}
 	
 	if(helpkey.check())
