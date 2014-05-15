@@ -160,7 +160,7 @@ legArmorList.push(noLegs);
 helmetList.push(noHelmet);
 var numshirts=9;
 var numpants=7;
-var numhelmets=13;
+var numhelmets=19;
 var numfaces=4;
 var numhair=9;
 for(var i=0;i<numshirts;i++)
@@ -853,6 +853,7 @@ dude.prototype.stopGesturing=function()
 	{
 		this.shaking=false;
 		this.shakeOffset=0;
+		this.crouching=false;
 	}
 }
 

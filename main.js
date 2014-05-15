@@ -21,8 +21,8 @@ function allPoint(guy)
 {
 	for (var i=1;i<people.length;i++)
 	{
-	
-		people[i].doGesture(GestureTypes.Point,50000,miles);
+		people[i].stopGesturing();
+		people[i].doGesture(Math.floor(Math.random()*6),50000,miles);
 		//console.log(":yar:");
 	}
 }
@@ -821,6 +821,7 @@ function mainUpdate()
 		//platformer=!platformer;
 		debugInfo=!debugInfo;
 		allPoint(miles);
+		miles.equip(helmetList[Math.floor(Math.random()*helmetList.length)]);
 	}
 	if(controller.buttons[6].check())
 	{
