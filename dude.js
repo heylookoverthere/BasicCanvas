@@ -944,23 +944,23 @@ dude.prototype.shoot=function()
 		{
 			if(this.aimingUp)
 			{
-				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletup",this,damage);
+				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletup",this,damage);
 			}else if(this.aimingDown)
 			{
-				monsta.shootProjectile(this.x-2,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletdown",this,damage);
+				monsta.shootProjectile(this.x-2,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletdown",this,damage);
 			}else{
-				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletleft",this,damage);
+				monsta.shootProjectile(this.x-2,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletleft",this,damage);
 			}
 		}else
 		{
 			if(this.aimingUp)
 			{
-				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletup",this,damage);
+				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletup",this,damage);
 			}else if(this.aimingDown)
 			{
-				monsta.shootProjectile(this.x+16,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletdown",this,damage);
+				monsta.shootProjectile(this.x+16,this.y+16,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletdown",this,damage);
 			}else{
-				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),25,false,"bulletright",this,damage);
+				monsta.shootProjectile(this.x+16,this.y-6,this.gunArm.backArm.angle+wobble+(2*i),35,false,"bulletright",this,damage);
 			}
 		}
 	}

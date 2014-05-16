@@ -351,6 +351,74 @@ virtualGamePad.prototype.checkDown=function()
 	}
 };
 
+virtualGamePad.prototype.checkUpLeft=function()
+{
+	if(this.keyboard)
+	{
+		return false;
+	}else
+	{
+		if((this.pad.axes[1]===-1) && (this.pad.axes[0]===-1))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+};
+
+virtualGamePad.prototype.checkUpRight=function()
+{
+	if(this.keyboard)
+	{
+		return false;
+	}else
+	{
+		if((this.pad.axes[1]===-1) && (this.pad.axes[0]===1))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+};
+
+virtualGamePad.prototype.checkDownLeft=function()
+{
+	if(this.keyboard)
+	{
+		return false;
+	}else
+	{
+		if((this.pad.axes[1]===1) && (this.pad.axes[0]===-1))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+};
+
+virtualGamePad.prototype.checkDownRight=function()
+{
+	if(this.keyboard)
+	{
+		return false;
+	}else
+	{
+		if((this.pad.axes[1]===1) && (this.pad.axes[0]===1))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+};
+
 virtualGamePad.prototype.update=function()
 {
 	this.pad = navigator.webkitGetGamepads && navigator.webkitGetGamepads()[0];
@@ -950,114 +1018,196 @@ function mainUpdate()
 			{
 				miles.xV=0;
 			}
-		}else
+		}else//PLATFORMER AIMING DIRECTION CONTROLS
 		{
 
-			if(controller.checkUp())
+			if(miles.aiming)
 			{
-				miles.gesturing=false;
-				if(miles.aiming)
-				{
-					if(otherControls)
-					{
-					if(miles.facingLeft)
-					{
-						miles.arms[0].backArm.angle=270;
-					}else
-					{
-						miles.arms[1].backArm.angle=270;
-					}
-					miles.aimingUp=true;
-					}else
-					{
-						miles.gun.angleOffset+=aimSpeed;
-					}
-				}
-				//what does up do?
-			}else
-			{
+				
+				/*miles.arms[0].relax();
+				miles.arms[1].relax();
 				miles.aimingUp=false;
-			}
-			if(controller.checkDown())
-			{
-				miles.crouching=true;
-				miles.gesturing=false;
-				mapDirty=true;
-				if(miles.aiming)
+				miles.aimingDown=false;*/
+				/*if(controller.checkUpLeft()) //very strange bug where some things rotate and others dont...put sleeves and gun on angle of arm and not hard angles based on UDLR?
 				{
-					if(otherControls)
+					miles.facingLeft=true;
+				}else if(controller.checkUpRight())
+				{
+					miles.facingLeft=false;
+				}else if(controller.checkDownLeft())
+				{
+					miles.facingLeft=true;
+				}else if(controller.checkDownRight())
+				{
+					miles.facingLeft=false;
+				}else */
+				{
+				
+					if(controller.checkUp())
 					{
-						if(miles.facingLeft)
+							if(otherControls)
+							{
+							if(miles.facingLeft)
+							{
+								miles.arms[0].backArm.angle=270;
+							}else
+							{
+								miles.arms[1].backArm.angle=270;
+							}
+							miles.aimingUp=true;
+							}else
+							{
+								miles.gun.angleOffset+=aimSpeed;
+							}
+						//what does up do?
+					}else
+					{
+						miles.aimingUp=false;
+					}
+					if(controller.checkDown())
+					{
+						miles.crouching=true;
+						miles.gesturing=false;
+						mapDirty=true;
+						if(otherControls)
 						{
-							miles.arms[0].backArm.angle=90;
+							if(miles.facingLeft)
+							{
+								miles.arms[0].backArm.angle=90;
+							}else
+							{
+								miles.arms[1].backArm.angle=90;
+							}
+							miles.aimingDown=true;
 						}else
 						{
-							miles.arms[1].backArm.angle=90;
+							miles.gun.angleOffset-=aimSpeed;
 						}
-						miles.aimingDown=true;
+			
 					}else
 					{
-						miles.gun.angleOffset-=aimSpeed;
+						miles.crouching=false;
+						miles.aimingDown=false;
+					}
+					if(controller.checkLeft())
+					{
+						miles.stopGesturing();
+						miles.facingLeft=true;
+						miles.arms[0].backArm.angle=180;
+					}
+					if(controller.checkRight())
+					{	
+						miles.facingLeft=false;
+						miles.stopGesturing();
+						miles.arms[1].backArm.angle=0;
 					}
 				}
-			}else
+			}else // PLATFORMER MOVEMENT DIRECTIONAL CONTROLS
 			{
-				miles.crouching=false;
-				miles.aimingDown=false;
-			}
-			if(controller.checkLeft())
-			{
-				miles.stopGesturing();
-				miles.facingLeft=true;
-				if(!miles.aiming)
+				if(controller.checkUp())
 				{
-					if(!miles.lastLeft)
-					{
-						this.xV=0;
-					}
+					miles.gesturing=false;
 					
-					if((curMap.walkable(Math.round(miles.x/tileSize),Math.round(miles.y/tileSize))) && (curMap.walkable(Math.round(miles.x/tileSize),Math.round(miles.y/tileSize)+1)))
-					{
-						miles.xV-=0.2*(miles.speedFactor/10);
-						mapDirty=true;
-						if(miles.xV<-miles.maxSpeed*(miles.speedFactor/10))
+						if(otherControls)
 						{
-							miles.xV=-miles.maxSpeed*(miles.speedFactor/10);
+						if(miles.facingLeft)
+						{
+							miles.arms[0].backArm.angle=270;
+						}else
+						{
+							miles.arms[1].backArm.angle=270;
 						}
-						if(miles.x<0) {miles.x=0;}
-					}else
-					{
-						miles.xV=0;
+						miles.aimingUp=true;
+						}else
+						{
+							miles.gun.angleOffset+=aimSpeed;
 					}
-					miles.lastLeft=true;
+					//what does up do?
+				}else
+				{
+					//miles.aimingUp=false;
 				}
-			}
-			if(controller.checkRight())
-			{	
-				miles.facingLeft=false;
-				miles.stopGesturing();
-				if(!miles.aiming)
+				if(controller.checkDown())
 				{
-					
-					if(miles.lastLeft)
+					miles.crouching=true;
+					miles.gesturing=false;
+					mapDirty=true;
+					if(miles.aiming)
 					{
-						this.xV=0;
-					}
-					//miles.facingLeft=false;
-					if((curMap.walkable(Math.round(miles.x/tileSize)+1,Math.round(miles.y/tileSize))) && (curMap.walkable(Math.round(miles.x/tileSize)+2,Math.round(miles.y/tileSize)+1)))
-					{
-						miles.xV+=0.2*miles.speedFactor;
-						mapDirty=true;
-						if(miles.xV>miles.maxSpeed*(miles.speedFactor/10))
+						if(otherControls)
 						{
-							miles.xV=miles.maxSpeed*(miles.speedFactor/10);
+							if(miles.facingLeft)
+							{
+								miles.arms[0].backArm.angle=90;
+							}else
+							{
+								miles.arms[1].backArm.angle=90;
+							}
+							miles.aimingDown=true;
+						}else
+						{
+							miles.gun.angleOffset-=aimSpeed;
 						}
-						if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
-					}else
-					{
-						miles.xV=0;
 					}
-					miles.lastLeft=false;
+				}else
+				{
+					miles.crouching=false;
+					miles.aimingDown=false;
+				}
+				if(controller.checkLeft())
+				{
+					miles.stopGesturing();
+					miles.facingLeft=true;
+					if(!miles.aiming)
+					{
+						if(!miles.lastLeft)
+						{
+							this.xV=0;
+						}
+						
+						if((curMap.walkable(Math.round(miles.x/tileSize),Math.round(miles.y/tileSize))) && (curMap.walkable(Math.round(miles.x/tileSize),Math.round(miles.y/tileSize)+1)))
+						{
+							miles.xV-=0.2*(miles.speedFactor/10);
+							mapDirty=true;
+							if(miles.xV<-miles.maxSpeed*(miles.speedFactor/10))
+							{
+								miles.xV=-miles.maxSpeed*(miles.speedFactor/10);
+							}
+							if(miles.x<0) {miles.x=0;}
+						}else
+						{
+							miles.xV=0;
+						}
+						miles.lastLeft=true;
+					}
+				}
+				if(controller.checkRight())
+				{	
+					miles.facingLeft=false;
+					miles.stopGesturing();
+					if(!miles.aiming)
+					{
+						
+						if(miles.lastLeft)
+						{
+							this.xV=0;
+						}
+						//miles.facingLeft=false;
+						if((curMap.walkable(Math.round(miles.x/tileSize)+1,Math.round(miles.y/tileSize))) && (curMap.walkable(Math.round(miles.x/tileSize)+2,Math.round(miles.y/tileSize)+1)))
+						{
+							miles.xV+=0.2*miles.speedFactor;
+							mapDirty=true;
+							if(miles.xV>miles.maxSpeed*(miles.speedFactor/10))
+							{
+								miles.xV=miles.maxSpeed*(miles.speedFactor/10);
+							}
+							if(miles.x>(curMap.width-5)*tileSize) {miles.x=(curMap.width-5)*tileSize}
+						}else
+						{
+							miles.xV=0;
+						}
+						miles.lastLeft=false;
+					}
 				}
 			}
 		}
