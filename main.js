@@ -826,7 +826,7 @@ function mainUpdate()
 	
 	if(outfitkey.check())
 	{
-		miles.equipOutfit(Math.floor(Math.random()*4));
+		miles.equipOutfit(Math.floor(Math.random()*5));
 	}
 	
 	if(helpkey.check())

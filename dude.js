@@ -36,6 +36,9 @@ sleeveColorList.push("404040");
 sleeveColorList.push("404040");
 sleeveColorList.push("3A61FF");
 sleeveColorList.push("1F6300");
+sleeveColorList.push("00137F");
+sleeveColorList.push("00770B");
+
 
 var otherControls=true;
 var aimSpeed=9;
@@ -167,9 +170,9 @@ chestArmorList.push(noChest);
 
 legArmorList.push(noLegs);
 helmetList.push(noHelmet);
-var numshirts=13;
-var numpants=11;
-var numhelmets=24;
+var numshirts=15;
+var numpants=12;
+var numhelmets=25;
 var numfaces=4;
 var numhair=9;
 var numfacialhair=5;
@@ -618,6 +621,11 @@ dude.prototype.equipOutfit=function(w)
 		this.equip(legArmorList[11]);
 		this.equip(chestArmorList[13]);
 		this.equip(helmetList[14]);
+	}else 	if(w==4) //link
+	{
+		this.equip(legArmorList[12]);
+		this.equip(chestArmorList[15]);
+		this.equip(helmetList[25]);
 	}
 };
 
@@ -916,7 +924,7 @@ dude.prototype.shoot=function()
 {
 	//console.log("boom");
 	var damage=15;
-	if(this.shotPer>1)
+	if(this.shotsPer>1)
 	{
 		damage=3;
 	}
