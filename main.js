@@ -1024,10 +1024,10 @@ function mainUpdate()
 			if(miles.aiming)
 			{
 				
-				/*miles.arms[0].relax();
-				miles.arms[1].relax();
+				//miles.arms[0].relax();
+				//miles.arms[1].relax();
 				miles.aimingUp=false;
-				miles.aimingDown=false;*/
+				miles.aimingDown=false;
 				/*if(controller.checkUpLeft()) //very strange bug where some things rotate and others dont...put sleeves and gun on angle of arm and not hard angles based on UDLR?
 				{
 					miles.facingLeft=true;
@@ -1045,6 +1045,8 @@ function mainUpdate()
 				
 					if(controller.checkUp())
 					{
+							miles.arms[0].relax();
+							miles.arms[1].relax();
 							if(otherControls)
 							{
 							if(miles.facingLeft)
