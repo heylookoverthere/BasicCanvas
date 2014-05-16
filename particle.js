@@ -6,6 +6,7 @@ function particle(){
 	this.damage=0;
 	this.centerX=0;
 	this.centerY=0;
+	this.angle=0;
 	this.collisions=false;
 	this.color=bColors[Math.floor(Math.random()*8)];
 	this.gravity=false;
@@ -96,6 +97,7 @@ particle.prototype.update=function(){
 					//console.log("hit");
 					this.alive=false;
 					people[i].hurt(this.damage,this.shooter);
+					people[i].spurt(-this.angle);
 				}
 			}
 		}
@@ -116,9 +118,29 @@ particleSystem.prototype.start=function(dur,x,y,xv,yv,color,gravity,exploader){
 		tod.xv=xv;
 		tod.yv=yv;
 		tod.alive=true;
+		tod.flicker=false;
 		tod.counter=dur;
 		tod.color=color;
-		tod.gravity=gravity
+		tod.gravity=gravity;
+		tod.exploader=exploader;
+		var stamp = new Date();
+		tod.startTime=stamp.getTime();
+		tod.durTime=dur;
+		this.particles.push(tod);
+	};
+particleSystem.prototype.startSmall=function(dur,x,y,xv,yv,color,gravity,exploader){
+		var tod=new particle();
+		if(!exploader) {exploader=false;}
+		tod.x=x;
+		tod.y=y;
+		tod.xv=xv;
+		tod.yv=yv;
+		tod.size=3;
+		tod.alive=true;
+		tod.flicker=false;
+		tod.counter=dur;
+		tod.color=color;
+		tod.gravity=gravity;
 		tod.exploader=exploader;
 		var stamp = new Date();
 		tod.startTime=stamp.getTime();
@@ -150,6 +172,7 @@ particleSystem.prototype.shootProjectile=function(x,y,ang,spd,exploader,spt,shoo
 		tod.shooter=shooter;
 		tod.x=x;
 		tod.y=y;
+		tod.angle=ang;
 		tod.damage=dmg;
 		tod.xv=Math.cos(ang* (Math.PI / 180))*spd; 
 		tod.yv=Math.sin(ang*(Math.PI / 180))*spd;
@@ -167,6 +190,19 @@ particleSystem.prototype.shootProjectile=function(x,y,ang,spd,exploader,spt,shoo
 		shooter.bullets.push(tod);
 		this.particles.push(tod);
 	};
+particleSystem.prototype.spurt=function(x,y,amt,ang)
+{
+
+	for(var i=0;i<amt;i++)
+	{
+		ang=270+Math.random()*35;
+		if(Math.random()*10>5)
+		{
+			ang=270-Math.random()*35;
+		}
+		this.shootSmall(x+16,y+6,ang,2.5);
+	}
+};
 particleSystem.prototype.draw=function(can,cam){
 		var c=1;
 
@@ -183,7 +219,8 @@ particleSystem.prototype.draw=function(can,cam){
 					this.particles[i].sprite.draw(can, this.particles[i].x-cam.tileX*tileSize,this.particles[i].y-cam.tileY*tileSize);
 				}else
 				{
-					can.fillRect(this.particles[i].x+cam.tileX, this.particles[i].y+cam.tileY, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
+					//can.fillStyle="red";
+					can.fillRect(this.particles[i].x-cam.tileX*tileSize, this.particles[i].y-cam.tileY*tileSize, this.particles[i].size*cam.zoom, this.particles[i].size*cam.zoom);
 				}
 			}
 		}
@@ -217,7 +254,11 @@ particleSystem.prototype.explosionTextured=function(num,x,y,force,txt){
 		}
 	};
 particleSystem.prototype.shoot=function(x,y,ang,vel){
-		this.start(1000, x, y, Math.cos(ang* (Math.PI / 180))*vel, Math.sin(ang*(Math.PI / 180))*vel,bColors[Math.floor(Math.random()*8)],false);
+		this.start(1000, x, y, Math.cos(ang* (Math.PI / 180))*vel, Math.sin(ang*(Math.PI / 180))*vel,"AA0000",true);
+
+	};
+particleSystem.prototype.shootSmall=function(x,y,ang,vel){
+		this.startSmall(1000, x, y, Math.cos(ang* (Math.PI / 180))*vel, Math.sin(ang*(Math.PI / 180))*vel,"AA0000",true);
 
 	};
 particleSystem.prototype.shootTextured=function(x,y,ang,vel,tex){

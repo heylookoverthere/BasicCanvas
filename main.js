@@ -1,10 +1,18 @@
 var debugInfo=false;
 var people=[];
+var fires=[];
 var miles=new dude();
 miles.equip(legArmorList[Math.floor(Math.random()*legArmorList.length)]);
 miles.equip(chestArmorList[Math.floor(Math.random()*chestArmorList.length)]);
 miles.gun=miles.guns[0];
 people.push(miles);
+
+var mel=new flame();
+mel.x=miles.x;
+mel.y=miles.y;
+mel.alive=true;
+fires.push(mel);
+
 for(var i=0;i<24;i++)
 {
 	var giles=new dude();
@@ -751,6 +759,12 @@ function mainDraw() {
 		}
 		people[i].draw(canvas,camera);
 	}
+	
+	for(var i=0;i<fires.length;i++)
+	{
+		fires[i].draw(canvas,camera);
+	}
+	
 	monsta.draw(canvas,camera);
 
 	/*dingle(0,1);
@@ -774,6 +788,8 @@ function mainUpdate()
 {
 	if(!gamestart) return;
 	controller.update();
+	mel.x=miles.x;
+mel.y=miles.y;
 	var tick=0;	
     lasttime=milliseconds;
     timestamp = new Date();
@@ -786,6 +802,14 @@ function mainUpdate()
 		if(!people[i].alive)
 		{
 			people.splice(i,1);
+			i--;
+		}
+	}
+	for(var i=0;i<fires.length;i++)
+	{
+		if(!fires[i].alive)
+		{
+			fires.splice(i,1);
 			i--;
 		}
 	}
@@ -933,6 +957,11 @@ function mainUpdate()
 	for(var i=0;i<people.length;i++)
 	{
 		people[i].update();
+	}
+	
+	for(var i=0;i<fires.length;i++)
+	{
+		fires[i].update();
 	}
 	
 	var speeMulti=1;

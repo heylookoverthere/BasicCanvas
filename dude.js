@@ -1,3 +1,45 @@
+function flame()
+{
+	this.sprites=[];
+	this.x=0;
+	this.y=0;
+	this.xV=0;
+	this.yV=0;
+	this.alive=false;
+	this.aniRate=5;
+	this.aniTrack=0;
+	this.aniCount=0;
+	this.sprites.push(Sprite("fire0"));
+	this.sprites.push(Sprite("fire1"));
+	this.sprites.push(Sprite("fire2"));
+	this.sprites.push(Sprite("fire3"));
+}
+
+flame.prototype.update=function()
+{
+	this.aniCount++;
+	if(this.aniCount>this.aniRate)
+	{
+		this.aniCount=0;
+		this.aniTrack++;
+		if(this.aniTrack>this.sprites.length-1)
+		{
+			this.aniTrack=0;
+		}
+		
+	}
+};
+
+flame.prototype.draw=function(can,cam)
+{
+	if(!this.alive) {return;}
+	can.save();
+	can.globalAlpha=0.8;
+	can.scale(cam.zoom,cam.zoom);
+	this.sprites[this.aniTrack].draw(can, this.x-cam.tileX*tileSize,this.y-cam.tileY*tileSize);
+	can.restore();
+};
+
 EquipSlots={};
 EquipSlots.Legs=0;
 EquipSlots.Chest=1;
@@ -657,6 +699,11 @@ dude.prototype.kill=function()
 	this.alive=false;
 };
 
+dude.prototype.spurt=function(ang)
+{
+	monsta.spurt(this.x,this.y,3,ang);
+};
+
 dude.prototype.hurt=function(damage)
 {
 	this.flashing=true;
@@ -666,7 +713,7 @@ dude.prototype.hurt=function(damage)
 		this.kill();
 	}
 		
-}
+};
 
 dude.prototype.backDash=function()
 {
