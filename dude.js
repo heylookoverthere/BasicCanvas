@@ -57,6 +57,7 @@ function gun(guy,type)
 	this.shotsPer=1;
 	this.reloadSpeed=1;
 	this.shotSpeed=4;
+	this.ID=type;
 	this.aimAdjHead=0;
 	this.angleOffset=0;
 	if(type==0)
@@ -924,11 +925,11 @@ dude.prototype.shoot=function()
 {
 	//console.log("boom");
 	var damage=15;
-	if(this.shotsPer>1)
+	if(this.gun.shotsPer>1)
 	{
 		damage=3;
 	}
-	if(this.gun.ID=2)
+	if(this.gun.ID==2)
 	{
 		damage=30;
 	}
